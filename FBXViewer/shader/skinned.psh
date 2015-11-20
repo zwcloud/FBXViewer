@@ -1,0 +1,28 @@
+texture2D diffuseMap;
+
+sampler2D diffuseSampler = sampler_state
+{
+	texture = <diffuseMap>;
+	mipfilter = LINEAR;
+};
+
+struct InputPS
+{
+	float3 Color:	COLOR0;
+	float2 TC:		TEXCOORD0;
+};
+
+struct OutputPS
+{
+	float4 Color:	COLOR0;
+};
+
+OutputPS main(InputPS In)
+{
+	OutputPS outPS;
+	float4 sampled = tex2D(diffuseSampler, In.TC);
+	outPS.Color.rgb = sampled.xyz*In.Color.rgb;
+	outPS.Color.a = sampled.w;
+
+	return outPS;
+}
