@@ -282,8 +282,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         moving = true;
         hovering = false;
         lastCursorPos = currentCursorPos;
-        currentCursorPos.x = GET_X_LPARAM(lParam);
-        currentCursorPos.y = GET_Y_LPARAM(lParam);
+        currentCursorPos.x = (float)GET_X_LPARAM(lParam);
+		currentCursorPos.y = (float)GET_Y_LPARAM(lParam);
         TRACKMOUSEEVENT tme;
         tme.cbSize = sizeof(TRACKMOUSEEVENT);
         tme.dwFlags = TME_HOVER;
@@ -293,8 +293,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         break;
     case WM_LBUTTONDOWN:
         lastCursorPos = currentCursorPos;
-        currentCursorPos.x = GET_X_LPARAM(lParam);
-        currentCursorPos.y = GET_Y_LPARAM(lParam);
+		currentCursorPos.x = (float)GET_X_LPARAM(lParam);
+		currentCursorPos.y = (float)GET_Y_LPARAM(lParam);
         if (lastCursorPos!=currentCursorPos)
         {
             dragging = true;
@@ -306,8 +306,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         break;
     case WM_MOUSEHOVER:
         lastCursorPos = currentCursorPos;
-        currentCursorPos.x = GET_X_LPARAM(lParam);
-        currentCursorPos.y = GET_Y_LPARAM(lParam);
+		currentCursorPos.x = (float)GET_X_LPARAM(lParam);
+		currentCursorPos.y = (float)GET_Y_LPARAM(lParam);
         hovering = true;
         moving = false;
         break;

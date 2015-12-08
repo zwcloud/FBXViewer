@@ -10,9 +10,8 @@ class TMesh;
 class Skeleton;
 class Animation;
 /*
-一个fbx文件     包含1个或n个Mesh，对应1个或n个pmf文件数据
-                包含仅1个骨骼框架，对应1个psf文件数据
-                包含仅1个动画序列，对应1个paf文件数据
+一个fbx文件包含
+1个或n个Mesh、仅1个骨骼框架、仅1个动画序列
 */
 class FbxExtractor
 {

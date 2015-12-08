@@ -64,7 +64,7 @@ FbxExtractor::FbxExtractor(const char* src) : lSdkManager(NULL), fbxScene(NULL),
         }
         //在Mesh中复制顶点以使得UV和顶点位置一一对应
         SplitVertexForUV(pMesh);
-        //pMesh->Dump(1); //获得的UV是正确的，和Max中的一致，但渲染后仍有问题!已解决@Revision 6 2014/9/4 10:03
+        //pMesh->Dump(1);
         /*
         max script:
         getTVFace $st_001 1
@@ -191,8 +191,8 @@ bool FbxExtractor::ExtractWeight(TMesh* pMesh, FbxMesh* pFbxMesh)
             /*
             假设：FBX中权值不会为0.0
             */
-            DebugAssert(floatGreaterThan(weight, 0, 0.00001) && 
-                ( floatEqual(weight, 1.0, 0.00001) || floatLessThan(weight, 1.0f, 0.00001) ),
+			DebugAssert(floatGreaterThan((float)weight, 0.0f, 0.00001f) &&
+				(floatEqual((float)weight, 1.0f, 0.00001f) || floatLessThan((float)weight, 1.0f, 0.00001f)),
                 "Cluster %s的顶点%d权重的值不正常\n", lCluster->GetName(), vertexIndex);
             BoneIndexWeight biw(boneIndex, weight);
             AddWeight(MeshWeight[vertexIndex], biw);
@@ -210,19 +210,19 @@ bool FbxExtractor::ExtractWeight(TMesh* pMesh, FbxMesh* pFbxMesh)
             假设：所有关联到骨骼的顶点是没有权重的
                   （这个假设若不成立，那顶点根本和骨骼没有关联，说明文件数据有问题）
         */
-        DebugAssert(!(biw[0].Index==INVALID_INDEX && floatEqual(biw[0].Weight,0.0f, 0.0001f)),
+        DebugAssert(!(biw[0].Index==INVALID_INDEX && floatEqual((float)biw[0].Weight,0.0f, 0.0001f)),
             "假设： “所有关联到骨骼的顶点是没有权重的” 不成立，可能是文件数据有问题\n");
         //DebugAssert(biw[1].Weight!=0 || floatEqual(biw[1].Weight,0.0f, 0.0001f) && biw[1].Index==0, "");
         //DebugAssert(biw[2].Weight!=0 || floatEqual(biw[2].Weight,0.0f, 0.0001f) && biw[2].Index==0, "");
         //index
-        BoneIndices[i].x = biw[0].Index;
-        BoneIndices[i].y = biw[1].Index;
-        BoneIndices[i].z = biw[2].Index;
-        BoneIndices[i].w = biw[3].Index;
+        BoneIndices[i].x = (float)biw[0].Index;
+        BoneIndices[i].y = (float)biw[1].Index;
+        BoneIndices[i].z = (float)biw[2].Index;
+        BoneIndices[i].w = (float)biw[3].Index;
         //weight
-        BoneWeights[i].x = biw[0].Weight;
-        BoneWeights[i].y = biw[1].Weight;
-        BoneWeights[i].z = biw[2].Weight;
+        BoneWeights[i].x = (float)biw[0].Weight;
+        BoneWeights[i].y = (float)biw[1].Weight;
+        BoneWeights[i].z = (float)biw[2].Weight;
 #if 0
         DebugPrintf("权重信息：\n");
         const D3DXVECTOR3& v = pMesh->Positions.at(i);
@@ -362,7 +362,7 @@ bool FbxExtractor::SplitVertexForUV(TMesh* pMesh)
 
     //获取每个顶点位置的第1个UV值
     std::vector<bool> indexUsed(pMesh->nVertices, false);
-    for (int i=0; i<pMesh->nFaces; ++i)
+    for (unsigned int i=0; i<pMesh->nFaces; ++i)
     {
         for (int j=0; j<3; ++j)
         {
@@ -378,7 +378,7 @@ bool FbxExtractor::SplitVertexForUV(TMesh* pMesh)
 
     //按照UV“分裂”顶点
     //将同一个Position处的（index相同的）UV值，复制到新顶点的信息中
-    for (int i=0; i<pMesh->nFaces; ++i)
+	for (unsigned int i = 0; i<pMesh->nFaces; ++i)
     {
         for (int j=0; j<3; ++j)
         {
@@ -496,11 +496,11 @@ TMesh* FbxExtractor::ExtractStaticMesh(FbxMesh* lMesh)
 
     //获取顶点位置
     FbxVector4* lControlPoints = lMesh->GetControlPoints();
-    for (i=0; i<pMesh->nVertices; i++)
+	for (unsigned i = 0; i<pMesh->nVertices; i++)
     {
-        Positions.at(i).x = lControlPoints[i][0];
-        Positions.at(i).y = lControlPoints[i][1];
-        Positions.at(i).z = lControlPoints[i][2];
+        Positions.at(i).x = (float)lControlPoints[i][0];
+		Positions.at(i).y = (float)lControlPoints[i][1];
+		Positions.at(i).z = (float)lControlPoints[i][2];
     }
 
     //获取索引值
@@ -712,7 +712,7 @@ TMesh* FbxExtractor::ExtractStaticMesh(FbxMesh* lMesh)
     std::vector<D3DXVECTOR3> BinormalsPerPosition(pMesh->nVertices, D3DXVECTOR3(0.0f, 0.0f, 0.0f));
 
     std::vector<bool> indexUsed(pMesh->nVertices, false);
-    for (int i=0; i<pMesh->nFaces; ++i)
+    for (unsigned int i=0; i<pMesh->nFaces; ++i)
     {
         for (int j=0; j<3; ++j)
         {
@@ -955,7 +955,7 @@ void FbxExtractor::ExtractCurve( unsigned int boneIndex, FbxAnimLayer* pAnimLaye
     FbxLongLong longstart = start.GetFrameCount();
     FbxLongLong longend = end.GetFrameCount();
     l_nFrameCount = int(longend - longstart) + 1;
-    for(int i = 0; i < l_nFrameCount; i++)   //不同的time
+	for (unsigned int i = 0; i < l_nFrameCount; i++)   //不同的time
     {
         FbxTime t; t.SetFrame(i);
         FbxAMatrix mat = pNode->EvaluateGlobalTransform(t); //这里不可靠！原因未知

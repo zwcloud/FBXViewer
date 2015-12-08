@@ -96,7 +96,7 @@ bool floatLessThan(float a, float b, float epsilon);
 
 float TriangleArea(const D3DXVECTOR3& v0, const D3DXVECTOR3& v1, const D3DXVECTOR3& v2)
 {
-    float area = 0.5*((v0.x*v1.y-v1.x*v0.y)+(v1.x*v2.y-v2.x*v1.y)+(v2.x*v0.y-v0.x*v2.y));
+    float area = 0.5f*((v0.x*v1.y-v1.x*v0.y)+(v1.x*v2.y-v2.x*v1.y)+(v2.x*v0.y-v0.x*v2.y));
     return fabs(area);
 }
 //²Î¿¼£ºhttp://stackoverflow.com/a/20861130

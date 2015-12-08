@@ -270,8 +270,8 @@ namespace StaticMesh
         GraphicsDevice* pGDevice = GraphicsDevice::getInstance();
         IDirect3DDevice9* pDevice = pGDevice->m_pD3DDevice;
         //将屏幕坐标进行变换，变换到相对于mCubeViewport的原点的坐标
-        int x = currentMousePos.x - pGDevice->mCubeViewport.X;
-        int y = currentMousePos.y - pGDevice->mCubeViewport.Y;
+        int x = int(currentMousePos.x - pGDevice->mCubeViewport.X);
+		int y = int(currentMousePos.y - pGDevice->mCubeViewport.Y);
         //获取World中的射线
         Ray ray = CalcPickingRay(x, y,
             pGDevice->mCubeViewport, matView, matProj );
@@ -282,7 +282,7 @@ namespace StaticMesh
         V(pVB->Lock(0, 0, (void**)&vertex, 0));
         FaceType lTargetFaceType = FaceType::None;  //最近的Cube面
         float lMinDistance = FLT_MAX;               //最近的距离
-        for(int i = 0; i < nPrimitive * 3; i+=6)  //步进6是为了遍历一个矩形的两个三角形
+        for(unsigned int i = 0; i < nPrimitive * 3; i+=6)  //步进6是为了遍历一个矩形的两个三角形
         {
             FaceType lFaceType = FaceType(i/6);
 #ifdef DEBUG_CUBE
@@ -396,7 +396,7 @@ namespace StaticMesh
         HRESULT hr = S_FALSE;
         GraphicsDevice* pGDevice = GraphicsDevice::getInstance();
         IDirect3DDevice9* pDevice = pGDevice->m_pD3DDevice;
-        Ray ray = CalcPickingRay(screenPos.x, screenPos.y,
+        Ray ray = CalcPickingRay((int)screenPos.x, (int)screenPos.y,
             pGDevice->mCubeViewport, matView, matProj );
         PCVertex rayLine[] = {
             {D3DXVECTOR3(0.0f,0.0f,0.0f), D3DCOLOR_ARGB(255,255,0,0)},

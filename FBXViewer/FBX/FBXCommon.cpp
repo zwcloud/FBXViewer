@@ -1,9 +1,6 @@
 #include "stdafx.h"
 #include <d3dx9.h>
-#include <vector>
 #include <stdio.h>
-#include <errno.h>
-#include <fstream>
 #include "FBXCommon.h"
 
 #ifdef IOS_REF
@@ -350,11 +347,11 @@ FbxAMatrix GetLocalTransformation(FbxNode* pNode)
 
 D3DXMATRIX FbxAMatrix_to_D3DXMATRIX(const FbxAMatrix& lMatrix)
 {
-    D3DXMATRIX mat(
-        lMatrix.Get(0,0), lMatrix.Get(0,1), lMatrix.Get(0,2), lMatrix.Get(0,3),
-        lMatrix.Get(1,0), lMatrix.Get(1,1), lMatrix.Get(1,2), lMatrix.Get(1,3),
-        lMatrix.Get(2,0), lMatrix.Get(2,1), lMatrix.Get(2,2), lMatrix.Get(2,3),
-        lMatrix.Get(3,0), lMatrix.Get(3,1), lMatrix.Get(3,2), lMatrix.Get(3,3));
+	D3DXMATRIX mat(
+		(float)lMatrix.Get(0, 0), (float)lMatrix.Get(0, 1), (float)lMatrix.Get(0, 2), (float)lMatrix.Get(0, 3),
+		(float)lMatrix.Get(1, 0), (float)lMatrix.Get(1, 1), (float)lMatrix.Get(1, 2), (float)lMatrix.Get(1, 3),
+		(float)lMatrix.Get(2, 0), (float)lMatrix.Get(2, 1), (float)lMatrix.Get(2, 2), (float)lMatrix.Get(2, 3),
+		(float)lMatrix.Get(3, 0), (float)lMatrix.Get(3, 1), (float)lMatrix.Get(3, 2), (float)lMatrix.Get(3, 3));
     return mat;
 }
 
