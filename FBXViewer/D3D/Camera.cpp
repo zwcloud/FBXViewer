@@ -116,7 +116,7 @@ void RotateCameraHorizontally(float radian)
 
     /*
         fixed 变换
-        */
+    */
     {
         //将eyePoint绕lookAt点旋转
         D3DXMATRIX rotation;
@@ -207,14 +207,14 @@ namespace StaticMesh
         D3DXVECTOR3 lPos[8];
         WORD* l_pIndex = NULL;
         D3DXVECTOR2* l_pUV = NULL;
-        lPos[0] = Origin + 4.0*D3DXVECTOR3(-1.0f, -1.0f, 1.0f);
-	    lPos[1] = Origin + 4.0*D3DXVECTOR3(-1.0f, 1.0f, 1.0f);
-	    lPos[2] = Origin + 4.0*D3DXVECTOR3(1.0f, 1.0f, 1.0f);
-	    lPos[3] = Origin + 4.0*D3DXVECTOR3(1.0f, -1.0f, 1.0f);
+        lPos[0] = Origin + 4.0*D3DXVECTOR3(-1.0f,  1.0f, -1.0f);
+	    lPos[1] = Origin + 4.0*D3DXVECTOR3(-1.0f,  1.0f,  1.0f);
+	    lPos[2] = Origin + 4.0*D3DXVECTOR3( 1.0f,  1.0f,  1.0f);
+	    lPos[3] = Origin + 4.0*D3DXVECTOR3( 1.0f,  1.0f, -1.0f);
 	    lPos[4] = Origin + 4.0*D3DXVECTOR3(-1.0f, -1.0f, -1.0f);
-	    lPos[5] = Origin + 4.0*D3DXVECTOR3(-1.0f, 1.0f, -1.0f);
-	    lPos[6] = Origin + 4.0*D3DXVECTOR3(1.0f, 1.0f, -1.0f);
-	    lPos[7] = Origin + 4.0*D3DXVECTOR3(1.0f, -1.0f, -1.0f);
+	    lPos[5] = Origin + 4.0*D3DXVECTOR3(-1.0f, -1.0f,  1.0f);
+	    lPos[6] = Origin + 4.0*D3DXVECTOR3( 1.0f, -1.0f,  1.0f);
+	    lPos[7] = Origin + 4.0*D3DXVECTOR3 (1.0f, -1.0f, -1.0f);
 	    WORD lIndex[] = {
 	        2,1,0, 0,3,2,   //上 可见   正面 逆时针
 	        4,5,6, 4,6,7,   //下 不可见 反面 顺时针

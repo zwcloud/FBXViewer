@@ -54,7 +54,7 @@ namespace StaticMesh
         CubeMesh(void);
         ~CubeMesh(void);
 
-		void SetVertexData(int meshType);
+		void SetVertexData(int meshType) override;
 
         virtual bool Update(const D3DXVECTOR2& currentMousePos,
             const D3DXMATRIX& matWorld, const D3DXMATRIX& matView, const D3DXMATRIX& matProj);
