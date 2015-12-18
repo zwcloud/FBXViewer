@@ -57,6 +57,7 @@ void SkinnedMesh::Load( const char* fbxSrc, IDirect3DDevice9* pDevice)
             DebugPrintf("Mesh %sÊÇ¾²Ì¬µÄ£¬ÂÔ¹ý\n", pMesh->mName.c_str());
             continue;
         }
+        pMesh->Convert(TMesh::MeshType::LEFTHANDED_YUP);
         bResult = pMesh->Create(pDevice);
         if (!bResult)
         {

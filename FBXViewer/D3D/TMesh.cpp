@@ -375,13 +375,14 @@ void TMesh::Convert( MeshType targetType )
         左手系下、Y向上、Z向内、X向右的（并且模型在转换后有正确的朝向）
     需要进行以下转换：
     ①Z坐标取反
-    ②三角形顶点顺序取反，即索引值每3个逆序
     ③（调整朝向）模型绕+X轴顺时针旋转90°
     */
     //①Z坐标取反
     for (unsigned int i=0; i<nVertices; ++i)
     {
-        Positions.at(i).z = -Positions.at(i).z;
+        float tmp = Positions.at(i).y;
+        Positions.at(i).y = Positions.at(i).z;
+        Positions.at(i).z = tmp;
     }
 #if 0
     //这样计算法向量是没有意义的，因为法向量数据TMesh::Normals并不和索引index一一对应，
@@ -400,21 +401,21 @@ void TMesh::Convert( MeshType targetType )
     }
 #endif
     //②三角形顶点顺序取反
-    for (unsigned int i=0; i<nFaces; ++i)  //
-    {
-        WORD index0 = IndexBuf.at(3*i);
-        WORD index1 = IndexBuf.at(3*i+1);
-        WORD index2 = IndexBuf.at(3*i+2);
-        IndexBuf.at(3*i) = index2;
-        IndexBuf.at(3*i+2) = index0;
-    }
+    //for (unsigned int i=0; i<nFaces; ++i)  //
+    //{
+    //    WORD index0 = IndexBuf.at(3*i);
+    //    WORD index1 = IndexBuf.at(3*i+1);
+    //    WORD index2 = IndexBuf.at(3*i+2);
+    //    IndexBuf.at(3*i) = index2;
+    //    IndexBuf.at(3*i+2) = index0;
+    //}
     //③模型绕+X轴顺时针旋转90°
-    D3DXMATRIX lRotation90;
-    D3DXMatrixRotationX(&lRotation90, D3DX_PI/2);
-    D3DXVECTOR4 tmp;
-    for (unsigned int i=0; i<nVertices; ++i)
-    {
-        D3DXVec3Transform(&tmp, &Positions.at(i), &lRotation90);
-        Positions.at(i) = D3DXVECTOR3(tmp.x, tmp.y, tmp.z);
-    }
+    //D3DXMATRIX lRotation90;
+    //D3DXMatrixRotationX(&lRotation90, -D3DX_PI / 2);
+    //D3DXVECTOR4 tmp;
+    //for (unsigned int i = 0; i<nVertices; ++i)
+    //{
+    //    D3DXVec3Transform(&tmp, &Positions.at(i), &lRotation90);
+    //    Positions.at(i) = D3DXVECTOR3(tmp.x, tmp.y, tmp.z);
+    //}
 }

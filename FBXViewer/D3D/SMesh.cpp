@@ -271,7 +271,7 @@ bool SMesh::Create( IDirect3DDevice9* pDevice )
 void SMesh::Draw( IDirect3DDevice9* pDevice)
 {
     HRESULT hr = S_FALSE;
-    pDevice->SetRenderState(D3DRS_CULLMODE, D3DCULL_CCW);
+    pDevice->SetRenderState(D3DRS_CULLMODE, D3DCULL_CW);
 
     V(pDevice->SetVertexShader(pVS));
     V(pDevice->SetPixelShader(pPS));

@@ -32,9 +32,9 @@ namespace
 }
 void InitCamera()
 {    
-    orginalFixedEyePoint = fixedEyePoint = orginalEyePoint = eyePoint = D3DXVECTOR3(30.0f, -40.0f, 20.0f);    
-	orginalFixedLookAt = fixedLookAt = orginalLookAt = lookAt = D3DXVECTOR3(0.0f, 0.0f, 0.0f);    
-    orginalFixedUp = fixedUp = orginalUp = up = D3DXVECTOR3(0.0f, 0.0f, 1.0f);   //z轴正向为上方向    
+    orginalFixedEyePoint = fixedEyePoint = orginalEyePoint = eyePoint = D3DXVECTOR3(30.0f, 40.0f, 20.0f);    
+	orginalFixedLookAt = fixedLookAt = orginalLookAt = lookAt = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+    orginalFixedUp = fixedUp = orginalUp = up = D3DXVECTOR3(0.0f, 1.0f, 0.0f);   //z轴正向为上方向    
 }
 
 void ResetCamera()
@@ -207,44 +207,43 @@ namespace StaticMesh
         D3DXVECTOR3 lPos[8];
         WORD* l_pIndex = NULL;
         D3DXVECTOR2* l_pUV = NULL;
-        lPos[0] = Origin + 4.0*D3DXVECTOR3(-1.0f,  1.0f, -1.0f);
-	    lPos[1] = Origin + 4.0*D3DXVECTOR3(-1.0f,  1.0f,  1.0f);
-	    lPos[2] = Origin + 4.0*D3DXVECTOR3( 1.0f,  1.0f,  1.0f);
-	    lPos[3] = Origin + 4.0*D3DXVECTOR3( 1.0f,  1.0f, -1.0f);
-	    lPos[4] = Origin + 4.0*D3DXVECTOR3(-1.0f, -1.0f, -1.0f);
-	    lPos[5] = Origin + 4.0*D3DXVECTOR3(-1.0f, -1.0f,  1.0f);
-	    lPos[6] = Origin + 4.0*D3DXVECTOR3( 1.0f, -1.0f,  1.0f);
-	    lPos[7] = Origin + 4.0*D3DXVECTOR3 (1.0f, -1.0f, -1.0f);
+        //上 四顶点
+        lPos[0] = Origin + 10.0*D3DXVECTOR3(-1.0f,  1.0f, -1.0f);
+	    lPos[1] = Origin + 10.0*D3DXVECTOR3(-1.0f,  1.0f,  1.0f);
+	    lPos[2] = Origin + 10.0*D3DXVECTOR3( 1.0f,  1.0f,  1.0f);
+	    lPos[3] = Origin + 10.0*D3DXVECTOR3( 1.0f,  1.0f, -1.0f);
+        //下 四顶点
+	    lPos[4] = Origin + 10.0*D3DXVECTOR3(-1.0f, -1.0f, -1.0f);
+	    lPos[5] = Origin + 10.0*D3DXVECTOR3(-1.0f, -1.0f,  1.0f);
+	    lPos[6] = Origin + 10.0*D3DXVECTOR3( 1.0f, -1.0f,  1.0f);
+	    lPos[7] = Origin + 10.0*D3DXVECTOR3( 1.0f, -1.0f, -1.0f);
 	    WORD lIndex[] = {
 	        2,1,0, 0,3,2,   //上 可见   正面 逆时针
-	        4,5,6, 4,6,7,   //下 不可见 反面 顺时针
-	        0,4,3, 3,4,7,   //前 可见   正面 逆时针
-	        1,2,5, 2,6,5,   //后 不可见 反面 顺时针
-	        0,1,4, 4,1,5,   //左 不可见 反面 顺时针
-	        2,3,7, 2,7,6,   //右 可见   正面 逆时针
+	        7,4,5, 5,6,7,   //下 不可见 反面 顺时针
+	        3,0,4, 4,7,3,   //前 可见   正面 逆时针
+	        1,2,6, 6,5,1,   //后 不可见 反面 顺时针
+	        0,1,5, 5,4,0,   //左 不可见 反面 顺时针
+	        2,3,7, 7,6,2,   //右 可见   正面 逆时针
         };
 	    l_pIndex = lIndex;
 #define v2 D3DXVECTOR2
 	    D3DXVECTOR2 lUV[] = 
 	        {
-		        //上
-		        v2(0.666f,0.333f),v2(0.333f,0.333f),v2(0.333f,0.666f),
-		        v2(0.333f,0.666f),v2(0.666f,0.666f),v2(0.666f,0.333f),
-		        //下
-		        v2(0.666f,0.666f),v2(0.666f,1.000f),v2(1.000f,1.000f),
-		        v2(0.666f,0.666f),v2(1.000f,1.000f),v2(1.000f,0.666f),
-		        //前
-		        v2(0.333f,0.666f),v2(0.333f,1.000f),v2(0.666f,0.666f),
-		        v2(0.666f,0.666f),v2(0.333f,1.000f),v2(0.666f,1.000f),
-		        //后
-		        v2(0.333f,0.333f),v2(0.666f,0.333f),v2(0.333f,0.000f),
-		        v2(0.666f,0.333f),v2(0.666f,0.000f),v2(0.333f,0.000f),
-		        //左
-		        v2(0.333f,0.666f),v2(0.333f,0.333f),v2(0.000f,0.666f),
-		        v2(0.000f,0.666f),v2(0.333f,0.333f),v2(0.000f,0.333f),
-		        //右
-		        v2(0.666f,0.333f),v2(0.666f,0.666f),v2(1.000f,0.666f),
-		        v2(0.666f,0.333f),v2(1.000f,0.666f),v2(1.000f,0.333f),
+                v2(0.666f, 0.333f), v2(0.333f, 0.333f), v2(0.333f, 0.666f), v2(0.333f, 0.666f), v2(0.666f, 0.666f), v2(0.666f, 0.333f),//上
+                v2(1.000f, 0.666f), v2(0.666f, 0.666f), v2(0.666f, 1.000f), v2(0.666f, 1.000f), v2(1.000f, 1.000f), v2(1.000f, 0.666f),//下
+                v2(0.666f, 0.666f), v2(0.333f, 0.666f), v2(0.333f, 1.000f), v2(0.333f, 1.000f), v2(0.666f, 1.000f), v2(0.666f, 0.666f),//前
+                v2(0.666f, 0.000f), v2(0.333f, 0.000f), v2(0.333f, 0.333f), v2(0.333f, 0.333f), v2(0.666f, 0.333f), v2(0.666f, 0.000f),//后
+                v2(0.333f, 0.333f), v2(0.000f, 0.333f), v2(0.000f, 0.666f), v2(0.000f, 0.666f), v2(0.333f, 0.666f), v2(0.333f, 0.333f),//左
+                v2(1.000f, 0.333f), v2(0.666f, 0.333f), v2(0.666f, 0.666f), v2(0.666f, 0.666f), v2(1.000f, 0.666f), v2(1.000f, 0.333f),//右
+#ifdef f
+                v2(0.666f,0.333f),v2(0.333f,0.333f),v2(0.333f,0.666f),  v2(0.333f,0.666f),v2(0.666f,0.666f),v2(0.666f,0.333f),//上
+			    v2(0.666f,0.666f),v2(0.666f,1.000f),v2(1.000f,1.000f),  v2(0.666f,0.666f),v2(1.000f,1.000f),v2(1.000f,0.666f),//下
+		        v2(0.333f,0.666f),v2(0.333f,1.000f),v2(0.666f,1.000f),  v2(0.666f,1.000f),v2(0.666f,0.666f),v2(0.333f,0.666f),//前
+		        v2(0.333f,0.333f),v2(0.666f,0.333f),v2(0.333f,0.000f),  v2(0.666f,0.333f),v2(0.666f,0.000f),v2(0.333f,0.000f),//后
+		        v2(0.333f,0.666f),v2(0.333f,0.333f),v2(0.000f,0.666f),  v2(0.000f,0.666f),v2(0.333f,0.333f),v2(0.000f,0.333f),//左
+		        v2(0.666f,0.333f),v2(0.666f,0.666f),v2(1.000f,0.666f),  v2(0.666f,0.333f),v2(1.000f,0.666f),v2(1.000f,0.333f),//右
+#endif
+
 	        };
 	    l_pUV = lUV;
 #undef v2

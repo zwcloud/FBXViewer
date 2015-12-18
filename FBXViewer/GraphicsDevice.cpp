@@ -99,7 +99,7 @@ void GraphicsDevice::BuildViewports()
     mAxisViewport.Height = 100;
     mAxisViewport.MinZ = 0.0f;
     mAxisViewport.MaxZ = 1.0f;
-    D3DXMatrixPerspectiveFovRH(&m_matAxisProj, D3DX_PI / 4.0f,
+    D3DXMatrixPerspectiveFovLH(&m_matAxisProj, D3DX_PI / 4.0f,
         (float)mAxisViewport.Width / (float)mAxisViewport.Height, 1.0f, 1000.0f);
 
     //…Ë÷√Cubeœ‘ æ«¯”Ú
@@ -108,8 +108,8 @@ void GraphicsDevice::BuildViewports()
     mCubeViewport.Width = 200;
     mCubeViewport.Height = 200;
     mCubeViewport.MinZ = 0.0f;
-    mCubeViewport.MaxZ = 1.0f;    
-    D3DXMatrixPerspectiveFovRH(&m_matCubeProj, D3DX_PI / 4.0f,
+    mCubeViewport.MaxZ = 1.0f;
+    D3DXMatrixPerspectiveFovLH(&m_matCubeProj, D3DX_PI / 4.0f,
         (float)mCubeViewport.Width / (float)mCubeViewport.Height, 1.0f, 1000.0f);
 }
 

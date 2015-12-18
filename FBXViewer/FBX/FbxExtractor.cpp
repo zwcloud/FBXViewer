@@ -10,8 +10,8 @@
 #include "..\D3D\Animation.h"
 
 #pragma region Dump¿ª¹Ø
-#define DumpMeshTransformation
-#define DumpRootNodeTransformation
+//#define DumpMeshTransformation
+//#define DumpRootNodeTransformation
 //#define DumpNodeGeometryTransformation
 #pragma endregion
 
@@ -716,12 +716,13 @@ TMesh* FbxExtractor::ExtractStaticMesh(FbxMesh* lMesh)
     {
         for (int j=0; j<3; ++j)
         {
-            WORD& currentIndex = IndexBuf[i*3+j];
+            unsigned index = i*3+j;
+            WORD& currentIndex = IndexBuf[index];
             if (indexUsed.at(currentIndex) == false)
             {
-                const D3DXVECTOR3& currentNormal = Normals.at(i*3+j);
-                const D3DXVECTOR3& currentTangent = Tangents.at(i*3+j);
-                const D3DXVECTOR3& currentBinormal = Binormals.at(i*3+j);
+                const D3DXVECTOR3& currentNormal = Normals.at(index);
+                const D3DXVECTOR3& currentTangent = Tangents.at(index);
+                const D3DXVECTOR3& currentBinormal = Binormals.at(index);
 
                 NormalsPerPosition.at(currentIndex) = currentNormal;
                 TangentsPerPosition.at(currentIndex) = currentTangent;

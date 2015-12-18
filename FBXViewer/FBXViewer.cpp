@@ -234,7 +234,7 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
         Matrix
     */
     D3DXMatrixIdentity(&identity);    
-    D3DXMatrixPerspectiveFovRH(&proj, D3DX_PI / 4.0f,
+    D3DXMatrixPerspectiveFovLH(&proj, D3DX_PI / 4.0f,
         (float)pGDevice->mDefaultViewport.Width / (float)pGDevice->mDefaultViewport.Height, 1.0f, 1000.0f);    
     return TRUE;
 }
@@ -396,8 +396,8 @@ INT_PTR CALLBACK About(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 void Update( unsigned int _dt )
 {
     //Update camera    
-    D3DXMatrixLookAtRH(&view, &eyePoint, &lookAt, &up);
-    D3DXMatrixLookAtRH(&fixedView, &fixedEyePoint, &fixedLookAt, &fixedUp);	
+    D3DXMatrixLookAtLH(&view, &eyePoint, &lookAt, &up);
+    D3DXMatrixLookAtLH(&fixedView, &fixedEyePoint, &fixedLookAt, &fixedUp);
     cube.Update(currentCursorPos, identity, fixedView, pGDevice->m_matCubeProj);
     if (dragging)
     {
