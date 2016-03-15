@@ -39,7 +39,7 @@ void SkinnedMesh::Destroy()
 
 void SkinnedMesh::Load( const char* fbxSrc, IDirect3DDevice9* pDevice)
 {
-    bool bResult = false;
+    bool bResult;
     m_pFbxExtractor = new FbxExtractor(fbxSrc);
     //MeshÁÐ±í
     mMeshes = m_pFbxExtractor->GetMeshes();
@@ -104,7 +104,8 @@ void SkinnedMesh::SetPose( D3DXMATRIX matWorld, unsigned int time )
     for (unsigned int i=0; i<m_nBone; i++)
     {
         Bone* pBone = m_pSkeleton->GetBone(i);
-        memcpy(&pBone->matOffset, &m_pAnimation->GetFrame(i, currentFrame), sizeof(D3DXMATRIX));   //get offsetMatrix at time 'time'
+        D3DXMATRIX mat = m_pAnimation->GetFrame(i, currentFrame);
+        memcpy(&pBone->matOffset, &mat, sizeof(D3DXMATRIX));   //get offsetMatrix at time 'time'
     }
 }
 
@@ -162,7 +163,8 @@ void SkinnedMesh::BuildBoneMesh()
         D3DXVECTOR3 thisBone = D3DXVECTOR3(w1(3, 0), w1(3, 1), w1(3, 2));
         D3DXVECTOR3 ParentBone = D3DXVECTOR3(w2(3, 0), w2(3, 1), w2(3, 2));
 
-        if(D3DXVec3Length(&(thisBone - ParentBone)) < 100.0f)
+        D3DXVECTOR3 offset = (thisBone - ParentBone);
+        if(D3DXVec3Length(&offset) < 100.0f)
         {
             mBonePositions.push_back(SkeletonVertex(ParentBone, D3DXCOLOR(1.0f, 0.0f, 0.0f, 1.0f)));
             mBonePositions.push_back(SkeletonVertex(thisBone,   D3DXCOLOR(0.0f, 1.0f, 0.0f, 1.0f)));
@@ -195,7 +197,8 @@ void SkinnedMesh::UpdateBoneMesh( const D3DXMATRIX& matWorld, unsigned int time 
         D3DXVECTOR3 thisBone = D3DXVECTOR3(w1(3, 0), w1(3, 1), w1(3, 2));
         D3DXVECTOR3 ParentBone = D3DXVECTOR3(w2(3, 0), w2(3, 1), w2(3, 2));
 
-        if(D3DXVec3Length(&(thisBone - ParentBone)) < 100.0f)
+        D3DXVECTOR3 offset = (thisBone - ParentBone);
+        if(D3DXVec3Length(&offset) < 100.0f)
         {
             mBonePositions.push_back(SkeletonVertex(ParentBone, D3DXCOLOR(1.0f, 0.0f, 0.0f, 1.0f)));
             mBonePositions.push_back(SkeletonVertex(thisBone,   D3DXCOLOR(0.0f, 1.0f, 0.0f, 1.0f)));
@@ -210,7 +213,7 @@ void SkinnedMesh::UpdateBoneMesh( const D3DXMATRIX& matWorld, unsigned int time 
 void SkinnedMesh::RenderBoneMesh(IDirect3DDevice9* pDevice,
     const D3DXMATRIX& matWorld, const D3DXMATRIX& matView, const D3DXMATRIX& matProj)
 {
-    HRESULT hr = S_FALSE;
+    HRESULT hr;
     unsigned int nBonePositions = mBonePositions.size();
 
     V(pDevice->SetTransform(D3DTS_WORLD, &mMatWorld));

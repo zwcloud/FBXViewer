@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "Camera.h"
 #include "GraphicsDevice.h"
-#include "TMesh.h"
 
 D3DXVECTOR3 eyePoint;
 D3DXVECTOR3 lookAt;
@@ -32,9 +31,9 @@ namespace
 }
 void InitCamera()
 {    
-    orginalFixedEyePoint = fixedEyePoint = orginalEyePoint = eyePoint = D3DXVECTOR3(30.0f, 40.0f, 20.0f);    
+    orginalFixedEyePoint = fixedEyePoint = orginalEyePoint = eyePoint = D3DXVECTOR3(-45.0f, 25.0f, -20.0f);
 	orginalFixedLookAt = fixedLookAt = orginalLookAt = lookAt = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
-    orginalFixedUp = fixedUp = orginalUp = up = D3DXVECTOR3(0.0f, 1.0f, 0.0f);   //z轴正向为上方向    
+    orginalFixedUp = fixedUp = orginalUp = up = D3DXVECTOR3(0.0f, 1.0f, 0.0f);   //+y为上方向
 }
 
 void ResetCamera()
@@ -182,7 +181,7 @@ void RotateCameraVertically(float radian)
 namespace StaticMesh
 {
 
-    CubeMesh::CubeMesh( void )
+    CubeMesh::CubeMesh(void) : mEdgeLenth(8.0f)
     {
 
     }
@@ -208,15 +207,15 @@ namespace StaticMesh
         WORD* l_pIndex = NULL;
         D3DXVECTOR2* l_pUV = NULL;
         //上 四顶点
-        lPos[0] = Origin + 10.0*D3DXVECTOR3(-1.0f,  1.0f, -1.0f);
-	    lPos[1] = Origin + 10.0*D3DXVECTOR3(-1.0f,  1.0f,  1.0f);
-	    lPos[2] = Origin + 10.0*D3DXVECTOR3( 1.0f,  1.0f,  1.0f);
-	    lPos[3] = Origin + 10.0*D3DXVECTOR3( 1.0f,  1.0f, -1.0f);
+        lPos[0] = Origin + mEdgeLenth*D3DXVECTOR3(-1.0f,  1.0f, -1.0f);
+	    lPos[1] = Origin + mEdgeLenth*D3DXVECTOR3(-1.0f,  1.0f,  1.0f);
+	    lPos[2] = Origin + mEdgeLenth*D3DXVECTOR3( 1.0f,  1.0f,  1.0f);
+	    lPos[3] = Origin + mEdgeLenth*D3DXVECTOR3( 1.0f,  1.0f, -1.0f);
         //下 四顶点
-	    lPos[4] = Origin + 10.0*D3DXVECTOR3(-1.0f, -1.0f, -1.0f);
-	    lPos[5] = Origin + 10.0*D3DXVECTOR3(-1.0f, -1.0f,  1.0f);
-	    lPos[6] = Origin + 10.0*D3DXVECTOR3( 1.0f, -1.0f,  1.0f);
-	    lPos[7] = Origin + 10.0*D3DXVECTOR3( 1.0f, -1.0f, -1.0f);
+	    lPos[4] = Origin + mEdgeLenth*D3DXVECTOR3(-1.0f, -1.0f, -1.0f);
+	    lPos[5] = Origin + mEdgeLenth*D3DXVECTOR3(-1.0f, -1.0f,  1.0f);
+	    lPos[6] = Origin + mEdgeLenth*D3DXVECTOR3( 1.0f, -1.0f,  1.0f);
+	    lPos[7] = Origin + mEdgeLenth*D3DXVECTOR3( 1.0f, -1.0f, -1.0f);
 	    WORD lIndex[] = {
 	        2,1,0, 0,3,2,   //上 可见   正面 逆时针
 	        7,4,5, 5,6,7,   //下 不可见 反面 顺时针
@@ -235,15 +234,6 @@ namespace StaticMesh
                 v2(0.666f, 0.000f), v2(0.333f, 0.000f), v2(0.333f, 0.333f), v2(0.333f, 0.333f), v2(0.666f, 0.333f), v2(0.666f, 0.000f),//后
                 v2(0.333f, 0.333f), v2(0.000f, 0.333f), v2(0.000f, 0.666f), v2(0.000f, 0.666f), v2(0.333f, 0.666f), v2(0.333f, 0.333f),//左
                 v2(1.000f, 0.333f), v2(0.666f, 0.333f), v2(0.666f, 0.666f), v2(0.666f, 0.666f), v2(1.000f, 0.666f), v2(1.000f, 0.333f),//右
-#ifdef f
-                v2(0.666f,0.333f),v2(0.333f,0.333f),v2(0.333f,0.666f),  v2(0.333f,0.666f),v2(0.666f,0.666f),v2(0.666f,0.333f),//上
-			    v2(0.666f,0.666f),v2(0.666f,1.000f),v2(1.000f,1.000f),  v2(0.666f,0.666f),v2(1.000f,1.000f),v2(1.000f,0.666f),//下
-		        v2(0.333f,0.666f),v2(0.333f,1.000f),v2(0.666f,1.000f),  v2(0.666f,1.000f),v2(0.666f,0.666f),v2(0.333f,0.666f),//前
-		        v2(0.333f,0.333f),v2(0.666f,0.333f),v2(0.333f,0.000f),  v2(0.666f,0.333f),v2(0.666f,0.000f),v2(0.333f,0.000f),//后
-		        v2(0.333f,0.666f),v2(0.333f,0.333f),v2(0.000f,0.666f),  v2(0.000f,0.666f),v2(0.333f,0.333f),v2(0.000f,0.333f),//左
-		        v2(0.666f,0.333f),v2(0.666f,0.666f),v2(1.000f,0.666f),  v2(0.666f,0.333f),v2(1.000f,0.666f),v2(1.000f,0.333f),//右
-#endif
-
 	        };
 	    l_pUV = lUV;
 #undef v2

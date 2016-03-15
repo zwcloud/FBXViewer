@@ -40,7 +40,6 @@ bool dragging = false;
 bool hovering = false;
 bool moving = false;
 
-// 此代码模块中包含的函数的前向声明:
 ATOM				MyRegisterClass(HINSTANCE hInstance);
 BOOL				InitInstance(HINSTANCE, int);
 LRESULT CALLBACK	WndProc(HWND, UINT, WPARAM, LPARAM);
@@ -130,21 +129,6 @@ int APIENTRY _tWinMain(HINSTANCE hInstance,
 	return (int) msg.wParam;
 }
 
-
-
-//
-//  函数: MyRegisterClass()
-//
-//  目的: 注册窗口类。
-//
-//  注释:
-//
-//    仅当希望
-//    此代码与添加到 Windows 95 中的“RegisterClassEx”
-//    函数之前的 Win32 系统兼容时，才需要此函数及其用法。调用此函数十分重要，
-//    这样应用程序就可以获得关联的
-//    “格式正确的”小图标。
-//
 ATOM MyRegisterClass(HINSTANCE hInstance)
 {
 	WNDCLASSEX wcex;
@@ -166,16 +150,6 @@ ATOM MyRegisterClass(HINSTANCE hInstance)
 	return RegisterClassEx(&wcex);
 }
 
-//
-//   函数: InitInstance(HINSTANCE, int)
-//
-//   目的: 保存实例句柄并创建主窗口
-//
-//   注释:
-//
-//        在此函数中，我们在全局变量中保存实例句柄并
-//        创建和显示主程序窗口。
-//
 BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 {
     hInst = hInstance; // 将实例句柄存储在全局变量中
@@ -239,16 +213,6 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
     return TRUE;
 }
 
-//
-//  函数: WndProc(HWND, UINT, WPARAM, LPARAM)
-//
-//  目的: 处理主窗口的消息。
-//
-//  WM_COMMAND	- 处理应用程序菜单
-//  WM_PAINT	- 绘制主窗口
-//  WM_DESTROY	- 发送退出消息并返回
-//
-//
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
 	int wmId, wmEvent;
@@ -292,17 +256,13 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         TrackMouseEvent(&tme);
         break;
     case WM_LBUTTONDOWN:
-        lastCursorPos = currentCursorPos;
 		currentCursorPos.x = (float)GET_X_LPARAM(lParam);
 		currentCursorPos.y = (float)GET_Y_LPARAM(lParam);
-        if (lastCursorPos!=currentCursorPos)
-        {
-            dragging = true;
-        }
-        else
-        {
-            dragging = false;
-        }
+        lastCursorPos = currentCursorPos;
+        dragging = true;
+        break;
+    case WM_LBUTTONUP:
+        dragging = false;
         break;
     case WM_MOUSEHOVER:
         lastCursorPos = currentCursorPos;
@@ -403,8 +363,8 @@ void Update( unsigned int _dt )
     {
         //拖动时进行旋转
         D3DXVECTOR2 mousePosDetla(currentCursorPos-lastCursorPos);
-        RotateCameraHorizontally(D3DX_PI/4*mousePosDetla.x);
-        RotateCameraVertically(D3DX_PI/4*mousePosDetla.y);
+        RotateCameraHorizontally(D3DX_PI/50*mousePosDetla.x);
+        RotateCameraVertically(D3DX_PI/50*mousePosDetla.y);
     }
     axis.Update();
     //axis.UpdateXYZ(fixedEyePoint);

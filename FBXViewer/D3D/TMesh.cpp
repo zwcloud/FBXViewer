@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "TMesh.h"
-#include "Skeleton.h"
 
 D3DVERTEXELEMENT9 SkinnedDecl[] = {
     {0, offsetof(Vertex,Pos), D3DDECLTYPE_FLOAT3, D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_POSITION, 0},
@@ -368,54 +367,37 @@ void TMesh::Convert( MeshType targetType )
         DebugPrintf("无需转换\n");
         return;
     }
+
     /*
     对静态模型进行如下转换
         右手系下、Z向上、Y向内、X向右的
                     =>
-        左手系下、Y向上、Z向内、X向右的（并且模型在转换后有正确的朝向）
-    需要进行以下转换：
-    ①Z坐标取反
-    ③（调整朝向）模型绕+X轴顺时针旋转90°
+        左手系下、Y向上、Z向内、X向右的
+
+    具体需要进行以下转换：
+    * Z坐标取反
+    * 三角形顶点顺序取反
+
     */
-    //①Z坐标取反
+
+    //Z坐标取反
     for (unsigned int i=0; i<nVertices; ++i)
     {
-        float tmp = Positions.at(i).y;
-        Positions.at(i).y = Positions.at(i).z;
-        Positions.at(i).z = tmp;
+        float zTemp = Positions.at(i).z;
+        Positions.at(i).z = Positions.at(i).y;
+        Positions.at(i).y = zTemp;
     }
-#if 0
-    //这样计算法向量是没有意义的，因为法向量数据TMesh::Normals并不和索引index一一对应，
-    //而是和顶点Position一一对应
-    //0.计算每个face的新法向量(标准：3DSMAX以逆时针为正向)
-    D3DXVECTOR3* faceNormalNew = new D3DXVECTOR3[nFaces];
-    for (unsigned int i=0; i<nFaces; i+=3)
+
+    //模型绕+Y轴顺时针旋转180°
+    D3DXMATRIX lRotationY180;
+    D3DXMatrixRotationY(&lRotationY180, D3DX_PI);
+    D3DXVECTOR4 tmp;
+    for (unsigned int i = 0; i<nVertices; ++i)
     {
-        WORD index0 = IndexBuf.at(3*i);
-        WORD index1 = IndexBuf.at(3*i+1);
-        WORD index2 = IndexBuf.at(3*i+2);
-        D3DXVECTOR3 v0 = Positions[index0];
-        D3DXVECTOR3 v1 = Positions[index1];
-        D3DXVECTOR3 v2 = Positions[index2];
-        D3DXVec3Cross(&faceNormalNew[i], &(v1-v0), &(v2-v0));
+        D3DXVec3Transform(&tmp, &Positions.at(i), &lRotationY180);
+        Positions.at(i) = D3DXVECTOR3(tmp.x, tmp.y, tmp.z);
     }
-#endif
-    //②三角形顶点顺序取反
-    //for (unsigned int i=0; i<nFaces; ++i)  //
-    //{
-    //    WORD index0 = IndexBuf.at(3*i);
-    //    WORD index1 = IndexBuf.at(3*i+1);
-    //    WORD index2 = IndexBuf.at(3*i+2);
-    //    IndexBuf.at(3*i) = index2;
-    //    IndexBuf.at(3*i+2) = index0;
-    //}
-    //③模型绕+X轴顺时针旋转90°
-    //D3DXMATRIX lRotation90;
-    //D3DXMatrixRotationX(&lRotation90, -D3DX_PI / 2);
-    //D3DXVECTOR4 tmp;
-    //for (unsigned int i = 0; i<nVertices; ++i)
-    //{
-    //    D3DXVec3Transform(&tmp, &Positions.at(i), &lRotation90);
-    //    Positions.at(i) = D3DXVECTOR3(tmp.x, tmp.y, tmp.z);
-    //}
+
+    //骨骼节点、动画根节点旋转
+
 }

@@ -10,7 +10,7 @@
 #include "..\D3D\Animation.h"
 
 #pragma region Dump开关
-//#define DumpMeshTransformation
+#define DumpMeshTransformation
 //#define DumpRootNodeTransformation
 //#define DumpNodeGeometryTransformation
 #pragma endregion
@@ -496,7 +496,7 @@ TMesh* FbxExtractor::ExtractStaticMesh(FbxMesh* lMesh)
 
     //获取顶点位置
     FbxVector4* lControlPoints = lMesh->GetControlPoints();
-	for (unsigned i = 0; i<pMesh->nVertices; i++)
+	for (i = 0; i<pMesh->nVertices; i++)
     {
         Positions.at(i).x = (float)lControlPoints[i][0];
 		Positions.at(i).y = (float)lControlPoints[i][1];
@@ -526,46 +526,15 @@ TMesh* FbxExtractor::ExtractStaticMesh(FbxMesh* lMesh)
         for (j = 0; j < 3; j++)
         {
             int lControlPointIndex = lMesh->GetPolygonVertex(i, j);
-            // 1. color (not used)
-
-            // 2. texture coordinates / UV
+            // 1. texture coordinates / UV
 #pragma region UV
             for (l = 0; l < lMesh->GetElementUVCount(); ++l)
             {
                 FbxGeometryElementUV* leUV = lMesh->GetElementUV( l);
 
-                switch (leUV->GetMappingMode())
+                FbxGeometryElement::EMappingMode mappingMode = leUV->GetMappingMode();
+                switch (mappingMode)
                 {
-                default:
-                    break;
-                /*
-                    假设：FbxGeometryElement::eByControlPoint的分支是从来不会被访问到的
-                */
-                case FbxGeometryElement::eByControlPoint:
-                    DebugAssert(false, "该分支不应该被访问，假设失败\n");
-                    switch (leUV->GetReferenceMode())
-                    {
-                    case FbxGeometryElement::eDirect:
-                        {
-                            FbxVector2 v = leUV->GetDirectArray().GetAt(lControlPointIndex);
-                            //UVs[lControlPointIndex] = D3DXVECTOR2((float)v[0],(float)v[1]);
-                        }
-                        break;
-                    case FbxGeometryElement::eIndexToDirect:
-                        {
-                            int id = leUV->GetIndexArray().GetAt(lControlPointIndex);
-                            {
-                                FbxVector2 v = leUV->GetDirectArray().GetAt(id);
-                                //UVs[lControlPointIndex] = D3DXVECTOR2((float)v[0],(float)v[1]);
-                            }
-                        }
-                        break;
-                    default:
-                        DebugAssert(false, "reference mode not supported");
-                        break;
-                    }
-                    break;
-
                 case FbxGeometryElement::eByPolygonVertex:
                     {
                         int lTextureUVIndex = lMesh->GetTextureUVIndex(i, j);
@@ -591,16 +560,19 @@ TMesh* FbxExtractor::ExtractStaticMesh(FbxMesh* lMesh)
                         }
                     }
                     break;
-
-                case FbxGeometryElement::eByPolygon: // doesn't make much sense for UVs
-                case FbxGeometryElement::eAllSame:   // doesn't make much sense for UVs
-                case FbxGeometryElement::eNone:       // doesn't make much sense for UVs
+                //不支持下面的几种Map mode
+                case FbxGeometryElement::eByPolygon:
+                case FbxGeometryElement::eAllSame:
+                case FbxGeometryElement::eNone:
+                case FbxGeometryElement::eByControlPoint:
+                    DebugAssert(false, "Unsupported mapping mode\n");
+                default:
                     break;
                 }
             }
 #pragma endregion
 
-            // 3. normal
+            // 2. normal
 #pragma region normal
             for( l = 0; l < lMesh->GetElementNormalCount(); ++l)
             {
@@ -628,14 +600,14 @@ TMesh* FbxExtractor::ExtractStaticMesh(FbxMesh* lMesh)
                         break;
                     default:
                         DebugAssert(false, "reference mode not supported\n");
-                        break; // other reference modes not shown here!
+                        break;
                     }
                 }
 
             }
 #pragma endregion
 
-            // 4. tangent
+            // 3. tangent
 #pragma region tangent
             for( l = 0; l < lMesh->GetElementTangentCount(); ++l)
             {
@@ -661,15 +633,15 @@ TMesh* FbxExtractor::ExtractStaticMesh(FbxMesh* lMesh)
                         }
                         break;
                     default:
-                        DebugAssert(false, "reference mode not supported\n");
-                        break; // other reference modes not shown here!
+                        DebugAssert(false, "Reference mode not supported\n");
+                        break;
                     }
                 }
 
             }
 #pragma endregion
 
-            // 5. binormal
+            // 4. binormal
 #pragma region binormal
             for( l = 0; l < lMesh->GetElementBinormalCount(); ++l)
             {
@@ -696,8 +668,8 @@ TMesh* FbxExtractor::ExtractStaticMesh(FbxMesh* lMesh)
                         }
                         break;
                     default:
-                        DebugAssert(false, "mapping mode not supported\n");
-                        break; // other reference modes not shown here!
+                        DebugAssert(false, "Reference mode not supported\n");
+                        break;
                     }
                 }
             }
@@ -706,15 +678,15 @@ TMesh* FbxExtractor::ExtractStaticMesh(FbxMesh* lMesh)
         } // for polygonSize
     } // for polygonCount
 
-    //修改Normal/Tangent/Binormal数据（按照顶点保存）
+    //按照顶点分裂Normal/Tangent/Binormal
     std::vector<D3DXVECTOR3> NormalsPerPosition(pMesh->nVertices, D3DXVECTOR3(0.0f, 0.0f, 0.0f));
     std::vector<D3DXVECTOR3> TangentsPerPosition(pMesh->nVertices, D3DXVECTOR3(0.0f, 0.0f, 0.0f));
     std::vector<D3DXVECTOR3> BinormalsPerPosition(pMesh->nVertices, D3DXVECTOR3(0.0f, 0.0f, 0.0f));
 
     std::vector<bool> indexUsed(pMesh->nVertices, false);
-    for (unsigned int i=0; i<pMesh->nFaces; ++i)
+    for (i=0; i<pMesh->nFaces; ++i)
     {
-        for (int j=0; j<3; ++j)
+        for (j=0; j<3; ++j)
         {
             unsigned index = i*3+j;
             WORD& currentIndex = IndexBuf[index];
@@ -737,7 +709,7 @@ TMesh* FbxExtractor::ExtractStaticMesh(FbxMesh* lMesh)
     Tangents = TangentsPerPosition;
     Binormals = BinormalsPerPosition;
 
-    //提取并保存纹理贴图的文件地址，仅从层0取数据
+    //提取并保存*基础*纹理贴图的文件地址，仅从层0取数据
     FbxLayerElementMaterial* pFbxMaterial = lMesh->GetLayer(0)->GetMaterials();
     if (NULL == pFbxMaterial)
     {
@@ -806,7 +778,8 @@ void FbxExtractor::ComputeSkeletonMatrix()
         FbxTime time;
         time.SetFrame(0);
         lMatrix = pFbxNode->EvaluateGlobalTransform(time); //第0帧作为bindpose
-        m_pSkeleton->SetBoneMatrix(i, FbxAMatrix_to_D3DXMATRIX(lMatrix));
+        D3DXMATRIX d3dMat = FbxAMatrix_to_D3DXMATRIX(lMatrix);
+        m_pSkeleton->SetBoneMatrix(i, d3dMat);
     }
 }
 
@@ -855,90 +828,6 @@ void FbxExtractor::ExtractCurve( unsigned int boneIndex, FbxAnimLayer* pAnimLaye
     lFrameCount_ = pCurveRZ->KeyGetCount();
     DebugAssert(lFrameCount == lFrameCount_, "%s(%d) error: 假设不成立\n", __FILE__, __LINE__);
 
-#if 0
-    FbxTime lKeyTime;
-    char lTimeString[256];
-    float v;
-    unsigned short time;    //注意： 未使用time，实际仅用了帧的序号
-
-    for(int i = 0; i < lFrameCount; i++)   //不同的time
-    {
-        lKeyTime = pCurveTX->KeyGetTime(i);
-        time = atoi(lKeyTime.GetTimeString(lTimeString, FbxUShort(256)));
-        v = pCurveTX->KeyGetValue(i);
-        frameValues.at(i).Time = time;
-        frameValues.at(i).T[0] = v;
-        //DebugPrintf("    time %d, TX %.3f\n", i, v);
-    }
-    for(int i = 0; i < lFrameCount; i++)   //不同的time
-    {
-        lKeyTime = pCurveTY->KeyGetTime(i);
-        time = atoi(lKeyTime.GetTimeString(lTimeString, FbxUShort(256)));
-        v = pCurveTY->KeyGetValue(i);
-        frameValues.at(i).Time = time;
-        frameValues.at(i).T[1] = v;
-        //DebugPrintf("    time %d, TY %.3f\n", i, v);
-    }
-    for(int i = 0; i < lFrameCount; i++)   //不同的time
-    {
-        lKeyTime = pCurveTZ->KeyGetTime(i);
-        time = atoi(lKeyTime.GetTimeString(lTimeString, FbxUShort(256)));
-        v = pCurveTZ->KeyGetValue(i);
-        frameValues.at(i).Time = time;
-        frameValues.at(i).T[2] = v;
-        //DebugPrintf("    time %d, TZ %.3f\n", i, v);
-    }
-
-    for(int i = 0; i < lFrameCount; i++)   //不同的time
-    {
-        lKeyTime = pCurveRX->KeyGetTime(i);
-        time = atoi(lKeyTime.GetTimeString(lTimeString, FbxUShort(256)));
-        v = pCurveRX->KeyGetValue(i);
-        frameValues.at(i).Time = time;
-        frameValues.at(i).R[0] = v;
-        //DebugPrintf("    time %d, RX %.3f\n", i, v);
-    }
-    for(int i = 0; i < lFrameCount; i++)   //不同的time
-    {
-        lKeyTime = pCurveRY->KeyGetTime(i);
-        time = atoi(lKeyTime.GetTimeString(lTimeString, FbxUShort(256)));
-        v = pCurveRY->KeyGetValue(i);
-        frameValues.at(i).Time = time;
-        frameValues.at(i).R[1] = v;
-        //DebugPrintf("    time %d, RY %.3f\n", i, v);
-    }
-    for(int i = 0; i < lFrameCount; i++)   //不同的time
-    {
-        lKeyTime = pCurveRZ->KeyGetTime(i);
-        time = atoi(lKeyTime.GetTimeString(lTimeString, FbxUShort(256)));
-        v = pCurveRZ->KeyGetValue(i);
-        frameValues.at(i).Time = time;
-        frameValues.at(i).R[2] = v;
-        //DebugPrintf("    time %d, RZ %.3f\n", i, v);
-    }
-
-    //DebugPrintf("---------------------------\n");
-
-    //将分散的数据填充到矩阵中
-    for(int i = 0; i < lFrameCount; i++)   //不同的time
-    {
-        TR& tr = frameValues.at(i);
-        FbxAMatrix mat;
-        /*
-            假设：没有Scale变换
-                  tr.R[3] == 1.0(不成立，默认为0.0，但是FbxAMatrix::SetTRS的功能正常)
-        */
-        FbxVector4 S(1.0, 1.0, 1.0);
-        //DebugAssert(floatEqual(tr.R[3], 1.0f, 0.00001f), "%s(%d) error: 假设tr.R[3] == 1.0 不成立\n", __FILE__, __LINE__);
-        mat.SetTRS(tr.T, tr.R, S);
-        //if (tr.Time==0)
-        //{
-        //    m_pSkeleton->SetBoneMatrix(boneIndex, FbxAMatrix_to_D3DXMATRIX(mat));
-        //}
-        m_pAnimation->AddFrame(boneIndex, pNode->GetName(), tr.Time, FbxAMatrix_to_D3DXMATRIX(mat));
-    }
-#else
-    //另一种方法
     //获取动画帧数和每帧时间间隔
     unsigned int l_nFrameCount = 0;
     FbxTimeSpan interval;   //每帧时间间隔
@@ -961,9 +850,9 @@ void FbxExtractor::ExtractCurve( unsigned int boneIndex, FbxAnimLayer* pAnimLaye
         FbxTime t; t.SetFrame(i);
         FbxAMatrix mat = pNode->EvaluateGlobalTransform(t); //这里不可靠！原因未知
         unsigned short currentTime = atoi(t.GetTimeString(lTimeString, FbxUShort(256)));
-        m_pAnimation->AddFrame(boneIndex, pNode->GetName(), currentTime, FbxAMatrix_to_D3DXMATRIX(mat));
+        D3DXMATRIX d3dMat = FbxAMatrix_to_D3DXMATRIX(mat);
+        m_pAnimation->AddFrame(boneIndex, pNode->GetName(), currentTime, d3dMat);
     }
-#endif
 }
 
 void FbxExtractor::ExtractAnimation()

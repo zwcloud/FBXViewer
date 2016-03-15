@@ -1,6 +1,5 @@
 #pragma once
 #include <fbxsdk.h>
-#include "D3D/Skeleton.h"
 
 void InitializeSdkObjects(FbxManager*& pManager, FbxScene*& pScene);
 void DestroySdkObjects(FbxManager* pManager, bool pExitStatus);

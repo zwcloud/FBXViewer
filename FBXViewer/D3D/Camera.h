@@ -45,6 +45,8 @@ namespace StaticMesh
             None,
         } FaceType;
         CubeFace mCubeFace;
+        const float mEdgeLenth;
+        
         CubeMesh(CubeMesh&);
         void operator = (CubeMesh&);
         
