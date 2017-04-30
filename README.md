@@ -17,20 +17,20 @@ A FBX file viewer including a 3D model information extracter
 
 Final layout of directory include and lib:
 
-> ©À©¤include
-> ©¦  ©À©¤dxsdk
-> ©¦  ©¸©¤fbxsdk
-> ©¸©¤lib
->     ©À©¤dxsdk
->     ©¦  ©À©¤x64
->     ©¦  ©¸©¤x86
->     ©¸©¤fbxsdk
->         ©À©¤x64
->         ©¦  ©À©¤debug
->         ©¦  ©¸©¤release
->         ©¸©¤x86
->             ©À©¤debug
->             ©¸©¤release
+> +-include
+> |  +-dxsdk
+> |  +-fbxsdk
+> +-lib
+>     +-dxsdk
+>     |  +-x64
+>     |  +-x86
+>     +-fbxsdk
+>         +-x64
+>         |  +-debug
+>         |  +-release
+>         +-x86
+>             +-debug
+>             +-release
 
 ## Build in VS2017
 1. Open `FBXViewer.sln` with Visual Studio 2017.
