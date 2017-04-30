@@ -2,6 +2,8 @@
 #include "Animation.h"
 #include "FBX/FBXCommon.h"
 
+#define LOG_FRAME_GET 0
+
 static D3DXMATRIX IdentityMatrix;
 
 Animation::Animation() : mDuration(0)
@@ -40,7 +42,7 @@ D3DXMATRIX Animation::GetFrame( unsigned int boneIndex, unsigned int time )
         const Frame& lFrame = boneFrames.at(i);
         if (lFrame.Time == time)
         {
-#if 1
+#if LOG_FRAME_GET
             {
                 DebugPrintf("Getting frame for bone <%s>:\n", mBoneNames.at(boneIndex).c_str());
                 DebugPrintf("    frame time: %d\n", i, lFrame.Time);

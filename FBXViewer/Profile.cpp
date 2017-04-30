@@ -16,7 +16,7 @@ void Profile::End()
 	QueryPerformanceCounter(&Instance->EndingTime);
 	Instance->ElapsedMicroseconds.QuadPart = Instance->EndingTime.QuadPart - Instance->StartingTime.QuadPart;
 	double diff = (Instance->ElapsedMicroseconds.QuadPart * 1000000 / Instance->Frequency.QuadPart) / 1000.0;
-	DebugPrintf("[Profile] <%s> uses %.3f ms",  Instance->name, diff);
+	DebugPrintf("[Profile] <%s> uses %.3f ms\n",  Instance->name, diff);
 }
 
 Profile::Profile(){}

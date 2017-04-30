@@ -1,6 +1,5 @@
 ﻿#include "stdafx.h"
 #include "Windowsx.h"
-#include "FBXViewer.h"
 #include "GraphicsDevice.h"
 #include "D3D/SkinnedMesh.h"
 #include "D3D/TMesh.h"
@@ -10,12 +9,12 @@
 #define MAX_LOADSTRING 100
 
 // 全局变量:
-HINSTANCE hInst;								// 当前实例
-HWND hWnd;                                      // 主窗口句柄
-TCHAR szTitle[MAX_LOADSTRING] = __TEXT("Title");					// 标题栏文本
-TCHAR szWindowClass[MAX_LOADSTRING] = __TEXT("MyWindowClass");			// 主窗口类名
-HANDLE HTimer;                                  // 时钟
-unsigned int FrameCount;                        // 帧计数
+HINSTANCE hInst;
+HWND hWnd;
+TCHAR szTitle[MAX_LOADSTRING] = __TEXT("Title");
+TCHAR szWindowClass[MAX_LOADSTRING] = __TEXT("MyWindowClass");
+HANDLE HTimer;// Frame signal timer
+unsigned int FrameCount;
 // 输入的相关参数
 bool Pause = false, bStepMode = true;
 bool bStepForward = false;
@@ -30,7 +29,6 @@ D3DXMATRIX fixedView;
 StaticMesh::AxisMesh axis;
 StaticMesh::CubeMesh cube;
 SkinnedMesh skinMesh;
-TMesh::MeshType meshType = TMesh::RIGHTHANDED_ZUP;
 
 //鼠标输入相关参数
 D3DXVECTOR2 lastCursorPos(0.0f, 0.0f);
@@ -43,7 +41,6 @@ bool moving = false;
 ATOM				MyRegisterClass(HINSTANCE hInstance);
 BOOL				InitInstance(HINSTANCE, int);
 LRESULT CALLBACK	WndProc(HWND, UINT, WPARAM, LPARAM);
-INT_PTR CALLBACK	About(HWND, UINT, WPARAM, LPARAM);
 void Update( unsigned int _dt );
 void Render( unsigned int _dt );
 void Destroy();
@@ -62,17 +59,13 @@ int APIENTRY _tWinMain(HINSTANCE hInstance,
 
 	MyRegisterClass(hInstance);
 
-	// 执行应用程序初始化:
 	if (!InitInstance (hInstance, nCmdShow))
 	{
 		return FALSE;
 	}
 
-
-	// 主消息循环:
 	while (msg.message!=WM_QUIT)
     {
-        //处理Windows消息
         if(PeekMessage(&msg,NULL,0,0,PM_REMOVE))
         {
             TranslateMessage(&msg);
@@ -80,14 +73,13 @@ int APIENTRY _tWinMain(HINSTANCE hInstance,
         }
         else
         {
-            //使用WaitableTimer来控制帧
             DWORD result = MsgWaitForMultipleObjects(
                 1,
                 &HTimer,
                 FALSE,INFINITE,QS_ALLEVENTS);
-            DebugAssert(result!=WAIT_FAILED, "MsgWaitForMultipleObjects等待失败: %d", GetLastError());
+            DebugAssert(result!=WAIT_FAILED, "MsgWaitForMultipleObjects failed: %d", GetLastError());
 
-            if(GetFocus()!=hWnd || Pause)    //失去焦点、暂停则跳过此帧
+            if(GetFocus()!=hWnd || Pause)    //lose focu or paused, ignore this frame
             {
                 continue;
             }
@@ -100,7 +92,7 @@ int APIENTRY _tWinMain(HINSTANCE hInstance,
                     {
                         FrameCount++;
                     }
-                    else    //逐帧单步模式
+                    else
                     {
                         if (bStepForward)
                         {
@@ -131,105 +123,67 @@ ATOM MyRegisterClass(HINSTANCE hInstance)
 	wcex.cbClsExtra		= 0;
 	wcex.cbWndExtra		= 0;
 	wcex.hInstance		= hInstance;
-	wcex.hIcon			= LoadIcon(hInstance, MAKEINTRESOURCE(IDI_FBXVIEWER));
+	wcex.hIcon			= NULL;
 	wcex.hCursor		= LoadCursor(NULL, IDC_ARROW);
 	wcex.hbrBackground	= (HBRUSH)(COLOR_WINDOW+1);
-	wcex.lpszMenuName	= MAKEINTRESOURCE(IDC_FBXVIEWER);
+	wcex.lpszMenuName	= NULL;
 	wcex.lpszClassName	= szWindowClass;
-	wcex.hIconSm		= LoadIcon(wcex.hInstance, MAKEINTRESOURCE(IDI_SMALL));
+	wcex.hIconSm		= NULL;
 
 	return RegisterClassEx(&wcex);
 }
 
 BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 {
-    hInst = hInstance; // 将实例句柄存储在全局变量中
-    
-    //创建并将主窗口句柄存储在全局变量中
+    hInst = hInstance;
     hWnd = CreateWindow(szWindowClass, szTitle, WS_OVERLAPPEDWINDOW,
        CW_USEDEFAULT, 0, CW_USEDEFAULT, 0, NULL, NULL, hInstance, NULL);
-    
-    if (!hWnd)
-    {
-       return FALSE;
-    }
-    
+    DebugAssert(hWnd != NULL, "CreateWindow Failed.");
+
     ShowWindow(hWnd, nCmdShow);
     UpdateWindow(hWnd);
 
-
-    /*
-     timer
-    */
-    //创建WaitableTimer
+    //Timer
     HTimer = CreateWaitableTimer(NULL,FALSE,NULL);
-    DebugAssert(NULL!=HTimer, "CreateWaitableTimer 失败: %d", GetLastError());
-    //初始化WaitableTimer
+    DebugAssert(NULL!=HTimer, "CreateWaitableTimer failed: %d", GetLastError());
     LARGE_INTEGER liDueTime;
     liDueTime.QuadPart = -1i64;   //1秒后开始计时
     SetWaitableTimer(HTimer, &liDueTime, 100, NULL, NULL, 0);  //周期200ms = 0.2s
     FrameCount = 0;
 
-    /*
-        GraphicsDevice
-    */
+    //GraphicsDevice
     pGDevice = GraphicsDevice::getInstance(hWnd);
     pGDevice->BuildViewports();
-    /*
-        Camera
-    */
-    InitCamera();
-    cube.SetVertexData(0);
-    cube.Create(pGDevice->m_pD3DDevice);
-    /*
-        Axis
-    */
-	axis.SetVertexData(0);  //参数实际上不起作用 TODO: 改进设计
-    axis.Create(pGDevice->m_pD3DDevice);
-    //axis.CreateXYZ(pGDevice->m_pD3DDevice);
-    //axis.UpdateXYZ(fixedEyePoint);
 
-	//Load mesh
-    /*
-        读取fbx，加载Skinned mesh
-    */
-    // 获取输出文件路径 测试用
-    char fileSrc[MAX_PATH];
-    GetTestFileName(fileSrc);
-    skinMesh.Load(fileSrc, pGDevice->m_pD3DDevice);
-    /*
-        Matrix
-    */
-    D3DXMatrixIdentity(&identity);    
+    //Camera
+    InitCamera();
+    cube.SetVertexData();
+    cube.Create(pGDevice->m_pD3DDevice);
+
+    //Axis
+	axis.SetVertexData();
+    axis.Create(pGDevice->m_pD3DDevice);
+
+	//Load mesh from file
+    char filePath[MAX_PATH];
+    GetTestFileName(filePath);// get testing file path
+    skinMesh.Load(filePath, pGDevice->m_pD3DDevice);
+
+    //Set up initial projection matrix
+    D3DXMatrixIdentity(&identity);
     D3DXMatrixPerspectiveFovLH(&proj, D3DX_PI / 4.0f,
-        (float)pGDevice->mDefaultViewport.Width / (float)pGDevice->mDefaultViewport.Height, 1.0f, 1000.0f);    
+        (float)pGDevice->mDefaultViewport.Width / (float)pGDevice->mDefaultViewport.Height, 1.0f, 1000.0f);
+
     return TRUE;
 }
 
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
-	int wmId, wmEvent;
 	PAINTSTRUCT ps;
 	HDC hdc;
 
 	switch (message)
 	{
-	case WM_COMMAND:
-		wmId    = LOWORD(wParam);
-		wmEvent = HIWORD(wParam);
-		//menu
-		switch (wmId)
-		{
-		case IDM_ABOUT:
-			DialogBox(hInst, MAKEINTRESOURCE(IDD_ABOUTBOX), hWnd, About);
-			break;
-		case IDM_EXIT:
-			DestroyWindow(hWnd);
-			break;
-		default:
-			return DefWindowProc(hWnd, message, wParam, lParam);
-		}
-		break;
 	case WM_PAINT:
 		hdc = BeginPaint(hWnd, &ps);
 		EndPaint(hWnd, &ps);
@@ -321,42 +275,22 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	return 0;
 }
 
-INT_PTR CALLBACK About(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
-{
-	UNREFERENCED_PARAMETER(lParam);
-	switch (message)
-	{
-	case WM_INITDIALOG:
-		return (INT_PTR)TRUE;
-
-	case WM_COMMAND:
-		if (LOWORD(wParam) == IDOK || LOWORD(wParam) == IDCANCEL)
-		{
-			EndDialog(hDlg, LOWORD(wParam));
-			return (INT_PTR)TRUE;
-		}
-		break;
-	}
-	return (INT_PTR)FALSE;
-}
-
-
 void Update( unsigned int _dt )
 {
-    //Update camera    
+    //Update camera
     D3DXMatrixLookAtLH(&view, &eyePoint, &lookAt, &up);
     D3DXMatrixLookAtLH(&fixedView, &fixedEyePoint, &fixedLookAt, &fixedUp);
-    cube.Update(currentCursorPos, identity, fixedView, pGDevice->m_matCubeProj);
     if (dragging)
     {
-        //拖动时进行旋转
+        //drag rotating
         D3DXVECTOR2 mousePosDetla(currentCursorPos-lastCursorPos);
         RotateCameraHorizontally(D3DX_PI/50*mousePosDetla.x);
         RotateCameraVertically(D3DX_PI/50*mousePosDetla.y);
     }
+
+    //Update scene objects
+    cube.Update(currentCursorPos, identity, fixedView, pGDevice->m_matCubeProj);
     axis.Update();
-    //axis.UpdateXYZ(fixedEyePoint);
-    
     skinMesh.Update(identity, _dt);
 }
 

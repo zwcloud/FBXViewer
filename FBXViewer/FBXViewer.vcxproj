@@ -78,6 +78,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <None Include="FBX\inputFile.txt" />
+    <None Include="scorpid.FBX" />
     <None Include="shader\skinned.psh" />
     <None Include="shader\skinned.vsh" />
     <None Include="shader\static.psh" />
@@ -95,12 +96,12 @@
     <ClInclude Include="D3D\Skeleton.h" />
     <ClInclude Include="D3D\SkinnedMesh.h" />
     <ClInclude Include="D3D\SMesh.h" />
-    <ClInclude Include="FBXViewer.h" />
     <ClInclude Include="FBX\FBXCommon.h" />
     <ClInclude Include="FBX\FbxExtractor.h" />
     <ClInclude Include="GraphicsDevice.h" />
     <ClInclude Include="Profile.h" />
     <ClInclude Include="stdafx.h" />
+    <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="D3D\Animation.cpp" />
@@ -119,6 +120,9 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
     </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="box.png" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

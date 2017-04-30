@@ -191,7 +191,7 @@ namespace StaticMesh
 
     }
     
-	void CubeMesh::SetVertexData(int meshType)
+	void CubeMesh::SetVertexData()
     {
         mName = "Cube";
         mPrimitiveType = D3DPT_TRIANGLELIST;

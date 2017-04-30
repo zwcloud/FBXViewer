@@ -15,7 +15,7 @@ namespace StaticMesh
         DestroyXYZ();
     }
 
-	void AxisMesh::SetVertexData(int meshType)
+	void AxisMesh::SetVertexData()
     {
         mName = "坐标轴";
         mPrimitiveType = D3DPT_LINELIST;

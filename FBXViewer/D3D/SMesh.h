@@ -70,7 +70,7 @@ namespace StaticMesh
 
         VertexType mVertexType;
 
-        virtual void SetVertexData(int meshType) = 0;
+        virtual void SetVertexData() = 0;
 
         void SetConstants( IDirect3DDevice9* pDevice,
             const D3DXMATRIX& matWorld, const D3DXMATRIX& matView, const D3DXMATRIX& matProj);

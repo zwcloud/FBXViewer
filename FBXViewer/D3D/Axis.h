@@ -22,7 +22,7 @@ namespace StaticMesh
         AxisMesh(void);
         ~AxisMesh(void);
 
-        virtual void SetVertexData(int meshType);
+        virtual void SetVertexData();
 
         void CreateXYZ(IDirect3DDevice9* pDevice);
         void UpdateXYZ(const D3DXVECTOR3& eyePoint);

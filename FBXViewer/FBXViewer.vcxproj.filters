@@ -48,12 +48,10 @@
     <None Include="shader\staticColorTextured.vsh">
       <Filter>shader</Filter>
     </None>
+    <None Include="scorpid.FBX" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
-      <Filter>Header</Filter>
-    </ClInclude>
-    <ClInclude Include="FBXViewer.h">
       <Filter>Header</Filter>
     </ClInclude>
     <ClInclude Include="GraphicsDevice.h">
@@ -88,6 +86,9 @@
     </ClInclude>
     <ClInclude Include="Profile.h">
       <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="targetver.h">
+      <Filter>Header</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -130,5 +131,8 @@
     <ClCompile Include="Profile.cpp">
       <Filter>common</Filter>
     </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="box.png" />
   </ItemGroup>
 </Project>
