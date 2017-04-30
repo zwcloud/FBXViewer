@@ -189,25 +189,16 @@ bool SMesh::Create( IDirect3DDevice9* pDevice )
                 hr =D3DXCreateTextureFromFileEx(pDevice, material.DiffuseMap.c_str(),
                     0, 0, 0, 0, D3DFMT_A8R8G8B8, D3DPOOL_MANAGED, D3DX_DEFAULT, D3DX_DEFAULT, D3DX_DEFAULT,
                     NULL, NULL, &pTexture);
-                if (FAILED(hr))
-                {
-                    DebugPrintf("Diffuse texture: %s 创建失败\n", material.DiffuseMap.c_str());
-                }
+                DebugAssert(SUCCEEDED(hr), "Diffuse texture: %s 创建失败\n", material.DiffuseMap.c_str());
             }
             else//创建1×1的Texture
             {
                 hr = pDevice->CreateTexture( 1 , 1 , 0 , 0 , D3DFMT_A8R8G8B8 , D3DPOOL_MANAGED , &pTexture , NULL ); 
                 D3DLOCKED_RECT lr;
                 hr = pTexture->LockRect( 0 , &lr , 0 , D3DLOCK_NOSYSLOCK );
-                if( SUCCEEDED( hr ) )
-                {
-                    *(DWORD*)lr.pBits = MAKEFOURCC( rand() & 255 , rand() & 255 , rand() & 255 , 255 );
-                    hr = pTexture->UnlockRect( 0 );
-                }
-                else
-                {
-                    DebugPrintf("1×1 Dummy texture 创建失败\n");
-                }
+                DebugAssert(SUCCEEDED(hr), "1×1 Dummy texture 创建失败\n");
+                *(DWORD*)lr.pBits = MAKEFOURCC( rand() & 255 , rand() & 255 , rand() & 255 , 255 );
+                hr = pTexture->UnlockRect( 0 );
             }
         }
 

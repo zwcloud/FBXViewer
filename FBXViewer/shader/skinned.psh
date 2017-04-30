@@ -1,4 +1,4 @@
-﻿texture2D diffuseMap;
+texture2D diffuseMap;
 
 sampler2D diffuseSampler = sampler_state
 {

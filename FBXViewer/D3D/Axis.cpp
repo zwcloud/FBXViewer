@@ -95,26 +95,17 @@ namespace StaticMesh
             HRESULT hr =D3DXCreateTextureFromFileEx(pDevice, "axisX.png",
                 0, 0, 0, 0, D3DFMT_A8R8G8B8, D3DPOOL_MANAGED, D3DX_DEFAULT, D3DX_DEFAULT, D3DX_DEFAULT,
                 NULL, NULL, &pXTexture);
-            if (FAILED(hr))
-            {
-                DebugPrintf("Diffuse texture: %s 创建失败\n", "axisX.png");
-            }
+            DebugAssert(SUCCEEDED(hr), "Diffuse texture: %s 创建失败\n", "axisX.png");
 
             hr =D3DXCreateTextureFromFileEx(pDevice, "axisY.png",
                 0, 0, 0, 0, D3DFMT_A8R8G8B8, D3DPOOL_MANAGED, D3DX_DEFAULT, D3DX_DEFAULT, D3DX_DEFAULT,
                 NULL, NULL, &pYTexture);
-            if (FAILED(hr))
-            {
-                DebugPrintf("Diffuse texture: %s 创建失败\n", "axisY.png");
-            }
+            DebugAssert(SUCCEEDED(hr), "Diffuse texture: %s 创建失败\n", "axisY.png");
 
             hr =D3DXCreateTextureFromFileEx(pDevice, "axisZ.png",
                 0, 0, 0, 0, D3DFMT_A8R8G8B8, D3DPOOL_MANAGED, D3DX_DEFAULT, D3DX_DEFAULT, D3DX_DEFAULT,
                 NULL, NULL, &pZTexture);
-            if (FAILED(hr))
-            {
-                DebugPrintf("Diffuse texture: %s 创建失败\n", "axisZ.png");
-            }
+            DebugAssert(SUCCEEDED(hr), "Diffuse texture: %s 创建失败\n", "axisZ.png");
         }
     }
 

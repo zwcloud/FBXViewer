@@ -1,4 +1,4 @@
-﻿texture2D diffuseMap : register( s0 );
+texture2D diffuseMap : register( s0 );
 
 sampler2D diffuseSampler = sampler_state
 {

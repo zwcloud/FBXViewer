@@ -1,4 +1,4 @@
-﻿//PCT
+//PCT
 float4x4 matWorld;
 float4x4 matView;
 float4x4 matProj;

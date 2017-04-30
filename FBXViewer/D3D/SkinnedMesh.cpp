@@ -41,8 +41,8 @@ void SkinnedMesh::Destroy()
 void SkinnedMesh::Load( const char* fbxSrc, IDirect3DDevice9* pDevice)
 {
     bool bResult;
-	DebugPrintf("Extracting data from FBX file<%s>\n", fbxSrc);
-	Profile::Start("Extract data");
+    DebugPrintf("Extracting data from FBX file<%s>\n", fbxSrc);
+    Profile::Start("Extract data");
     m_pFbxExtractor = new FbxExtractor(fbxSrc);
     //Mesh列表
     mMeshes = m_pFbxExtractor->GetMeshes();
@@ -50,8 +50,7 @@ void SkinnedMesh::Load( const char* fbxSrc, IDirect3DDevice9* pDevice)
     m_pSkeleton = m_pFbxExtractor->GetSkeleton();
     //唯一的动画
     m_pAnimation = m_pFbxExtractor->GetAnimation();
-	Profile::End();
-	DebugPrintf("done");
+    Profile::End();
 
     unsigned int nMeshes = mMeshes.size();
     for(unsigned int i=0; i<nMeshes; i++)

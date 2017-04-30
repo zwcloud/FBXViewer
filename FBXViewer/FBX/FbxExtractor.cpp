@@ -420,10 +420,7 @@ TMesh* FbxExtractor::ExtractStaticMesh(FbxMesh* lMesh)
 #if 0
     //FbxMesh::SplitPoints会将顶点数量增加到和索引一样多，其他效果未知
     bResult = lMesh->SplitPoints();
-    if (false == bResult)
-    {
-        DebugPrintf("SplitPoints 失败\n");
-    }
+    DebugAssert(bResult, "SplitPoints 失败\n");
 #endif
 
     pMesh->mName = pNode->GetName();
@@ -711,6 +708,7 @@ TMesh* FbxExtractor::ExtractStaticMesh(FbxMesh* lMesh)
         FbxSurfaceMaterial* pFbxSurfaceMaterial = pNode->GetMaterial(0);
         FbxProperty lFbxProperty = pFbxSurfaceMaterial->FindProperty(FbxLayerElement::sTextureChannelNames[0]);
         FbxTexture* lTexture = lFbxProperty.GetSrcObject<FbxTexture>(0);
+#if EXTRACT_TEXTURE
         if(lTexture)
         {
             DebugPrintf("    Textures for %s\n", lFbxProperty.GetName());
@@ -720,6 +718,7 @@ TMesh* FbxExtractor::ExtractStaticMesh(FbxMesh* lMesh)
             pMesh->material.DiffuseMap = lFileTexture->GetFileName();
             DebugPrintf("    File Name: \"%s\"\n", lFileTexture->GetFileName());
         }
+#endif
     }
 
     return pMesh;
@@ -813,6 +812,9 @@ void FbxExtractor::ExtractCurve( unsigned int boneIndex, FbxAnimLayer* pAnimLaye
     FbxLongLong longstart = start.GetFrameCount();
     FbxLongLong longend = end.GetFrameCount();
     l_nFrameCount = int(longend - longstart) + 1;
+    if (l_nFrameCount > 20) {
+        l_nFrameCount = 20;
+    }
 	for (unsigned int i = 0; i < l_nFrameCount; i++)   //不同的time
     {
         FbxTime t; t.SetFrame(i);

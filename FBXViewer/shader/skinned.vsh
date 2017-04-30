@@ -1,4 +1,4 @@
-﻿uniform extern float4x4 matWorld;
+uniform extern float4x4 matWorld;
 uniform extern float4x4 matViewProj;
 uniform extern float4x4 matWorldInverseTranspose;
 

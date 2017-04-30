@@ -1,4 +1,4 @@
-﻿struct InputPS
+struct InputPS
 {
 	float3 Color:	COLOR0;
 };
