@@ -1,18 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="源文件">
-      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
-      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
-    </Filter>
-    <Filter Include="头文件">
-      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
-      <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
-    </Filter>
-    <Filter Include="资源文件">
-      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
-      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
-    </Filter>
     <Filter Include="D3D">
       <UniqueIdentifier>{5981e929-0d1b-44b9-968f-b26108059ab2}</UniqueIdentifier>
     </Filter>
@@ -22,14 +10,19 @@
     <Filter Include="shader">
       <UniqueIdentifier>{a1fee8e6-f228-4725-a4f7-668149150b84}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="Source">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="common">
+      <UniqueIdentifier>{b2443ee8-89ff-4f4d-8681-6246b9ba7022}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <None Include="small.ico">
-      <Filter>资源文件</Filter>
-    </None>
-    <None Include="FBXViewer.ico">
-      <Filter>资源文件</Filter>
-    </None>
     <None Include="FBX\inputFile.txt" />
     <None Include="shader\skinned.psh">
       <Filter>shader</Filter>
@@ -58,19 +51,13 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="targetver.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="Resource.h">
-      <Filter>头文件</Filter>
+      <Filter>Header</Filter>
     </ClInclude>
     <ClInclude Include="FBXViewer.h">
-      <Filter>头文件</Filter>
+      <Filter>Header</Filter>
     </ClInclude>
     <ClInclude Include="GraphicsDevice.h">
-      <Filter>头文件</Filter>
+      <Filter>Header</Filter>
     </ClInclude>
     <ClInclude Include="D3D\Animation.h">
       <Filter>D3D</Filter>
@@ -99,16 +86,19 @@
     <ClInclude Include="D3D\TMesh.h">
       <Filter>D3D</Filter>
     </ClInclude>
+    <ClInclude Include="Profile.h">
+      <Filter>common</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
-      <Filter>源文件</Filter>
+      <Filter>Source</Filter>
     </ClCompile>
     <ClCompile Include="FBXViewer.cpp">
-      <Filter>源文件</Filter>
+      <Filter>Source</Filter>
     </ClCompile>
     <ClCompile Include="GraphicsDevice.cpp">
-      <Filter>源文件</Filter>
+      <Filter>Source</Filter>
     </ClCompile>
     <ClCompile Include="D3D\Animation.cpp">
       <Filter>D3D</Filter>
@@ -137,10 +127,8 @@
     <ClCompile Include="D3D\TMesh.cpp">
       <Filter>D3D</Filter>
     </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <ResourceCompile Include="FBXViewer.rc">
-      <Filter>资源文件</Filter>
-    </ResourceCompile>
+    <ClCompile Include="Profile.cpp">
+      <Filter>common</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

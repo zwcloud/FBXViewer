@@ -186,14 +186,7 @@ bool FbxExtractor::ExtractWeight(TMesh* pMesh, FbxMesh* pFbxMesh)
         {
             int vertexIndex = lIndices[k];
             double weight = lWeights[k];
-            //检测以保证数据正常
-            DebugAssert(vertexIndex >= 0, "索引数据有误\n");
-            /*
-            假设：FBX中权值不会为0.0
-            */
-			DebugAssert(floatGreaterThan((float)weight, 0.0f, 0.00001f) &&
-				(floatEqual((float)weight, 1.0f, 0.00001f) || floatLessThan((float)weight, 1.0f, 0.00001f)),
-                "Cluster %s的顶点%d权重的值不正常\n", lCluster->GetName(), vertexIndex);
+			//weight can be zero
             BoneIndexWeight biw(boneIndex, weight);
             AddWeight(MeshWeight[vertexIndex], biw);
         }
@@ -206,14 +199,6 @@ bool FbxExtractor::ExtractWeight(TMesh* pMesh, FbxMesh* pFbxMesh)
     for (unsigned int i=0; i<nVertices; i++)
     {
         std::vector<BoneIndexWeight>& biw = MeshWeight.at(i);
-        /*
-            假设：所有关联到骨骼的顶点是没有权重的
-                  （这个假设若不成立，那顶点根本和骨骼没有关联，说明文件数据有问题）
-        */
-        DebugAssert(!(biw[0].Index==INVALID_INDEX && floatEqual((float)biw[0].Weight,0.0f, 0.0001f)),
-            "假设： “所有关联到骨骼的顶点是没有权重的” 不成立，可能是文件数据有问题\n");
-        //DebugAssert(biw[1].Weight!=0 || floatEqual(biw[1].Weight,0.0f, 0.0001f) && biw[1].Index==0, "");
-        //DebugAssert(biw[2].Weight!=0 || floatEqual(biw[2].Weight,0.0f, 0.0001f) && biw[2].Index==0, "");
         //index
         BoneIndices[i].x = (float)biw[0].Index;
         BoneIndices[i].y = (float)biw[1].Index;
@@ -391,8 +376,6 @@ bool FbxExtractor::SplitVertexForUV(TMesh* pMesh)
                 const D3DXVECTOR3& currentTangent = Tangents.at(currentIndex);
                 const D3DXVECTOR3& currentBinormal = Binormals.at(currentIndex);
 
-                const D3DXVECTOR4& currentBoneIndices = BoneIndices.at(currentIndex);
-                const D3DXVECTOR3& currentBoneWeights = BoneWeights.at(currentIndex);
 
                 //复制顶点Positon/UV/Normal/Tangent/Binormal / BoneIndices/BoneWeights
                 Positions.push_back(currentPosition);
@@ -400,8 +383,14 @@ bool FbxExtractor::SplitVertexForUV(TMesh* pMesh)
                 Normals.push_back(currentNormal);
                 Tangents.push_back(currentTangent);
                 Binormals.push_back(currentBinormal);
-                BoneIndices.push_back(currentBoneIndices);
-                BoneWeights.push_back(currentBoneWeights);
+
+				if (!pMesh->m_bStatic)
+				{
+					const D3DXVECTOR4& currentBoneIndices = BoneIndices.at(currentIndex);
+					const D3DXVECTOR3& currentBoneWeights = BoneWeights.at(currentIndex);
+					BoneIndices.push_back(currentBoneIndices);
+					BoneWeights.push_back(currentBoneWeights);
+				}
 
                 //修改索引为复制的新顶点的位置
                 currentIndex = Positions.size()-1;
@@ -796,10 +785,6 @@ namespace
 void FbxExtractor::ExtractCurve( unsigned int boneIndex, FbxAnimLayer* pAnimLayer )
 {
     bool bResult = false;
-    /*
-        假设pCurveTX、pCurveTY、pCurveTZ、pCurveRX、pCurveRY、pCurveRZ的lKeyCount（帧数）是相同的
-        （基本都是这样的）
-    */
     std::vector<TR> frameValues;    //存储骨骼(boneIndex)的每一帧的动画信息
     FbxNode* pNode = m_pSkeleton->mFbxNodes.at(boneIndex);
     FbxAnimCurve* pCurve = NULL;
@@ -810,23 +795,6 @@ void FbxExtractor::ExtractCurve( unsigned int boneIndex, FbxAnimLayer* pAnimLaye
         DebugPrintf("骨骼%s(%d)没有包含动画信息\n", pNode->GetName(), boneIndex);
         return;
     }
-    int lFrameCount = pCurveTX->KeyGetCount();
-    frameValues.resize(lFrameCount);
-    FbxAnimCurve* pCurveTY = pNode->LclTranslation.GetCurve(pAnimLayer, FBXSDK_CURVENODE_COMPONENT_Y);
-    int lFrameCount_ = pCurveTY->KeyGetCount();
-    DebugAssert(lFrameCount == lFrameCount_, "%s(%d) error: 假设不成立\n", __FILE__, __LINE__);
-    FbxAnimCurve* pCurveTZ = pNode->LclTranslation.GetCurve(pAnimLayer, FBXSDK_CURVENODE_COMPONENT_Z);
-    lFrameCount_ = pCurveTZ->KeyGetCount();
-    DebugAssert(lFrameCount == lFrameCount_, "%s(%d) error: 假设不成立\n", __FILE__, __LINE__);
-    FbxAnimCurve* pCurveRX = pNode->LclRotation.GetCurve(pAnimLayer, FBXSDK_CURVENODE_COMPONENT_X);
-    lFrameCount_ = pCurveRX->KeyGetCount();
-    DebugAssert(lFrameCount == lFrameCount_, "%s(%d) error: 假设不成立\n", __FILE__, __LINE__);
-    FbxAnimCurve* pCurveRY = pNode->LclRotation.GetCurve(pAnimLayer, FBXSDK_CURVENODE_COMPONENT_Y);
-    lFrameCount_ = pCurveRY->KeyGetCount();
-    DebugAssert(lFrameCount == lFrameCount_, "%s(%d) error: 假设不成立\n", __FILE__, __LINE__);
-    FbxAnimCurve* pCurveRZ = pNode->LclRotation.GetCurve(pAnimLayer, FBXSDK_CURVENODE_COMPONENT_Z);
-    lFrameCount_ = pCurveRZ->KeyGetCount();
-    DebugAssert(lFrameCount == lFrameCount_, "%s(%d) error: 假设不成立\n", __FILE__, __LINE__);
 
     //获取动画帧数和每帧时间间隔
     unsigned int l_nFrameCount = 0;
@@ -882,10 +850,7 @@ void FbxExtractor::ExtractAnimation()
     }
 Only:
     FbxAnimLayer* pAnimLayer = pTheOnlyAnimLayer;
-    /*
-        假设FBXScene只有1个FbxAnimStack
-            FbxAnimStack只有1个FbxAnimLayer
-    */
+    //Only extract first FbxAnimLayer of first FbxAnimStack of the FBXScene//TODO
     FbxAnimCurve* lAnimCurve = NULL;
     unsigned int nBones = m_pSkeleton->NumBones();
     for (unsigned int i=0; i<nBones; i++)

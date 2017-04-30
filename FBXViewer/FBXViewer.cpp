@@ -12,8 +12,8 @@
 // 全局变量:
 HINSTANCE hInst;								// 当前实例
 HWND hWnd;                                      // 主窗口句柄
-TCHAR szTitle[MAX_LOADSTRING];					// 标题栏文本
-TCHAR szWindowClass[MAX_LOADSTRING];			// 主窗口类名
+TCHAR szTitle[MAX_LOADSTRING] = __TEXT("Title");					// 标题栏文本
+TCHAR szWindowClass[MAX_LOADSTRING] = __TEXT("MyWindowClass");			// 主窗口类名
 HANDLE HTimer;                                  // 时钟
 unsigned int FrameCount;                        // 帧计数
 // 输入的相关参数
@@ -56,15 +56,10 @@ int APIENTRY _tWinMain(HINSTANCE hInstance,
 	UNREFERENCED_PARAMETER(hPrevInstance);
 	UNREFERENCED_PARAMETER(lpCmdLine);
 
- 	// TODO: 在此放置代码。
     MSG msg;
     ZeroMemory(&msg, sizeof(MSG));
-	HACCEL hAccelTable;
     DWORD time = 0;
 
-	// 初始化全局字符串
-	LoadString(hInstance, IDS_APP_TITLE, szTitle, MAX_LOADSTRING);
-	LoadString(hInstance, IDC_FBXVIEWER, szWindowClass, MAX_LOADSTRING);
 	MyRegisterClass(hInstance);
 
 	// 执行应用程序初始化:
@@ -73,7 +68,6 @@ int APIENTRY _tWinMain(HINSTANCE hInstance,
 		return FALSE;
 	}
 
-	hAccelTable = LoadAccelerators(hInstance, MAKEINTRESOURCE(IDC_FBXVIEWER));
 
 	// 主消息循环:
 	while (msg.message!=WM_QUIT)
@@ -81,11 +75,8 @@ int APIENTRY _tWinMain(HINSTANCE hInstance,
         //处理Windows消息
         if(PeekMessage(&msg,NULL,0,0,PM_REMOVE))
         {
-            if (!TranslateAccelerator(msg.hwnd, hAccelTable, &msg))
-            {
-                TranslateMessage(&msg);
-                DispatchMessage(&msg);
-            }
+            TranslateMessage(&msg);
+            DispatchMessage(&msg);
         }
         else
         {
@@ -197,6 +188,8 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
     axis.Create(pGDevice->m_pD3DDevice);
     //axis.CreateXYZ(pGDevice->m_pD3DDevice);
     //axis.UpdateXYZ(fixedEyePoint);
+
+	//Load mesh
     /*
         读取fbx，加载Skinned mesh
     */
@@ -224,7 +217,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	case WM_COMMAND:
 		wmId    = LOWORD(wParam);
 		wmEvent = HIWORD(wParam);
-		// 分析菜单选择:
+		//menu
 		switch (wmId)
 		{
 		case IDM_ABOUT:
@@ -239,7 +232,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		break;
 	case WM_PAINT:
 		hdc = BeginPaint(hWnd, &ps);
-		// TODO: 在此添加任意绘图代码...
 		EndPaint(hWnd, &ps);
         break;
     case WM_MOUSEMOVE:
@@ -274,13 +266,13 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     case WM_KEYDOWN:
         switch(wParam)
         {
-        case VK_ESCAPE:    //按Esc退出
+        case VK_ESCAPE://Esc : quit
             PostQuitMessage(0);
             break;
-        case 'P': //按'P'暂停/恢复
+        case 'P':
             Pause = Pause ? false : true;
             break;
-        //camera 操作
+        //camera
         case 'W':
             MoveCameraForward(3.0f);
             break;
@@ -296,13 +288,10 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         case 'R':
             ResetCamera();
             break;
-        //参考：http://forums.codeguru.com/showthread.php?302925-Where-is-Page-Up-Down-Accelerator-Key&p=981700#post981700
-        //Page Up : VK_PRIOR
-        //Page Down : VK_NEXT
-        case VK_PRIOR:
+        case VK_PRIOR://Page Up : VK_PRIOR
             MoveCameraUpward(3.0f);
             break;
-        case VK_NEXT:
+        case VK_NEXT://Page Down : VK_NEXT
             MoveCameraDownward(3.0f);
             break;
         case 'Q':
@@ -332,7 +321,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	return 0;
 }
 
-// “关于”框的消息处理程序。
 INT_PTR CALLBACK About(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 {
 	UNREFERENCED_PARAMETER(lParam);

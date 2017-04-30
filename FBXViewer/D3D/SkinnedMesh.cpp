@@ -4,6 +4,7 @@
 #include "TMesh.h"
 #include "Skeleton.h"
 #include "Animation.h"
+#include "Profile.h"
 
 SkinnedMesh::SkinnedMesh( void ) :
 m_pFbxExtractor(NULL),
@@ -40,6 +41,8 @@ void SkinnedMesh::Destroy()
 void SkinnedMesh::Load( const char* fbxSrc, IDirect3DDevice9* pDevice)
 {
     bool bResult;
+	DebugPrintf("Extracting data from FBX file<%s>\n", fbxSrc);
+	Profile::Start("Extract data");
     m_pFbxExtractor = new FbxExtractor(fbxSrc);
     //Mesh列表
     mMeshes = m_pFbxExtractor->GetMeshes();
@@ -47,6 +50,8 @@ void SkinnedMesh::Load( const char* fbxSrc, IDirect3DDevice9* pDevice)
     m_pSkeleton = m_pFbxExtractor->GetSkeleton();
     //唯一的动画
     m_pAnimation = m_pFbxExtractor->GetAnimation();
+	Profile::End();
+	DebugPrintf("done");
 
     unsigned int nMeshes = mMeshes.size();
     for(unsigned int i=0; i<nMeshes; i++)
@@ -61,7 +66,7 @@ void SkinnedMesh::Load( const char* fbxSrc, IDirect3DDevice9* pDevice)
         bResult = pMesh->Create(pDevice);
         if (!bResult)
         {
-            DebugPrintf("创建TMesh %s 失败\n", pMesh->mName.c_str());
+            DebugAssert(false, "创建TMesh %s 失败\n", pMesh->mName.c_str());
         }
         else
         {

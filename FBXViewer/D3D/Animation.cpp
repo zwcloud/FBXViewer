@@ -26,7 +26,14 @@ void Animation::AddFrame( unsigned int boneIndex, const char* boneName, unsigned
 
 D3DXMATRIX Animation::GetFrame( unsigned int boneIndex, unsigned int time )
 {
+	auto x = mFrameMap.find(boneIndex);
+	if (x == mFrameMap.end())
+	{
+		return IdentityMatrix;
+	}
+
     const std::vector<Frame>& boneFrames = mFrameMap.at(boneIndex);
+
     unsigned int nboneFrames = boneFrames.size();
     for (unsigned int i=0; i<nboneFrames; i++)
     {
