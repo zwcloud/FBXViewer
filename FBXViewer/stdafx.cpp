@@ -147,4 +147,10 @@ bool floatLessThan(float a, float b, float epsilon)
 {
     return (b - a) > ( (fabs(a) < fabs(b) ? fabs(b) : fabs(a)) * epsilon);
 }
+
+bool AlmostZero(float a, float epsilon/* = 0.001f*/)
+{
+    return floatEqual(a, 0, epsilon);
+}
+
 #pragma endregion

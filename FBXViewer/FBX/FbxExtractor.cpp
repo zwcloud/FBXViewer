@@ -11,6 +11,8 @@
 
 #pragma region Dump开关
 #define DumpMeshTransformation
+#define DumpBones 1
+#define DumpAnimation 0
 //#define DumpRootNodeTransformation
 //#define DumpNodeGeometryTransformation
 #pragma endregion
@@ -88,23 +90,24 @@ FbxExtractor::FbxExtractor(const char* src) : lSdkManager(NULL), fbxScene(NULL),
         */
     }
 
-    ComputeSkeletonMatrix();
-
     ExtractAnimation();
 
+#if DumpBones
     //Dump Bones
-    //DebugPrintf("提取的骨骼信息:\n");
-    //unsigned int nBones = m_pSkeleton->NumBones();
-    //for (unsigned int i=0; i<nBones; i++)
-    //{
-    //    DebugPrintf("%d\n", i);
-    //    DumpBone(i, true, true);
-    //}
+    DebugPrintf("Bones:\n");
+    unsigned int nBones = m_pSkeleton->NumBones();
+    for (unsigned int i=0; i<nBones; i++)
+    {
+        DebugPrintf("%d\n", i);
+        DumpBone(i, true, true);
+    }
+#endif
 
+#if Animation
     //Dump Animation
-    //DebugPrintf("提取的动画信息:\n");
-    //m_pAnimation->Dump(true, true);
-
+    DebugPrintf("提取的动画信息:\n");
+    m_pAnimation->Dump(true, true);
+#endif
 }
 
 FbxExtractor::~FbxExtractor(void)
@@ -739,6 +742,9 @@ int FbxExtractor::ExtractBone( FbxNode* pNode, int parentID )
         if (m_pSkeleton->GetBone(i)->mName == pBone->mName)
             return -2;
     }
+
+    pBone->matBone = FbxAMatrix_to_D3DXMATRIX(pNode->EvaluateGlobalTransform());
+
     // save bone to skeleton
     m_pSkeleton->mBones.push_back(pBone);
     // 存储FbxNode，之后在ComputeSkeletonMatrix中根据这个获取骨骼矩阵，在ExtractCurve中根据这个获取动画信息
@@ -753,22 +759,6 @@ int FbxExtractor::ExtractBone( FbxNode* pNode, int parentID )
         m_pSkeleton->mRootBoneIds.push_back(pBone->mBoneId);
     }
     return pBone->mBoneId;
-}
-
-void FbxExtractor::ComputeSkeletonMatrix()
-{
-    FbxAMatrix lMatrix;
-    
-    unsigned int nBone = m_pSkeleton->NumBones();
-    for (unsigned int i=0; i<nBone; i++)
-    {
-        FbxNode* pFbxNode = m_pSkeleton->mFbxNodes[i];
-        FbxTime time;
-        time.SetFrame(0);
-        lMatrix = pFbxNode->EvaluateGlobalTransform(time); //第0帧作为bindpose
-        D3DXMATRIX d3dMat = FbxAMatrix_to_D3DXMATRIX(lMatrix);
-        m_pSkeleton->SetBoneMatrix(i, d3dMat);
-    }
 }
 
 namespace

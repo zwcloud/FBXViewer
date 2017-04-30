@@ -91,6 +91,8 @@ int APIENTRY _tWinMain(HINSTANCE hInstance,
                     if (!bStepMode)
                     {
                         FrameCount++;
+                        Update(FrameCount);
+                        Render(FrameCount);
                     }
                     else
                     {
@@ -222,6 +224,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         {
         case VK_ESCAPE://Esc : quit
             PostQuitMessage(0);
+            break;
+        case VK_OEM_3://~
+            bStepMode = !bStepMode;
             break;
         case 'P':
             Pause = Pause ? false : true;

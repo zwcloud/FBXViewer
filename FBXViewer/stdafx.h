@@ -71,6 +71,7 @@ std::string WStr2CStr(const std::wstring &str);
 bool floatEqual(float a, float b, float epsilon);
 bool floatGreaterThan(float a, float b, float epsilon);
 bool floatLessThan(float a, float b, float epsilon);
+bool AlmostZero(float a, float epsilon = 0.001f);
 #pragma endregion
 
 #if defined(DEBUG) || defined(_DEBUG)

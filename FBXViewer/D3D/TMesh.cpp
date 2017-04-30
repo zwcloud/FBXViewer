@@ -325,7 +325,16 @@ bool TMesh::Update( IDirect3DDevice9* pDevice, const D3DXMATRIX* matBone, unsign
             diff = D3DXVECTOR3(lTmp.x, lTmp.y, lTmp.z) - Positions.at(i);
             Normal += BoneWeights[i].z*diff;
 
-            float finalWeight = 1.0f - BoneWeights[i].x - BoneWeights[i].y - BoneWeights[i].z;
+            float finalWeight;
+            if (AlmostZero(BoneWeights[i].x) && AlmostZero(BoneWeights[i].y) && AlmostZero(BoneWeights[i].z))
+            {
+                finalWeight = 0.0f;
+            }
+            else
+            {
+                finalWeight = 1.0f - BoneWeights[i].x - BoneWeights[i].y - BoneWeights[i].z;
+            }
+
             D3DXVec3Transform(&lTmp, &Positions.at(i), &mat3);
             diff = D3DXVECTOR3(lTmp.x, lTmp.y, lTmp.z) - Positions.at(i);
             Pos += finalWeight*diff;
