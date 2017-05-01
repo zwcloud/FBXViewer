@@ -1,6 +1,6 @@
 ﻿#include "stdafx.h"
 #include "Axis.h"
-#include "..\GraphicsDevice.h"
+#include "GraphicsDevice.h"
 
 namespace StaticMesh
 {

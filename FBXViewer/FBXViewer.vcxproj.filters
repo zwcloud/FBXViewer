@@ -54,15 +54,6 @@
     <ClInclude Include="stdafx.h">
       <Filter>Header</Filter>
     </ClInclude>
-    <ClInclude Include="GraphicsDevice.h">
-      <Filter>Header</Filter>
-    </ClInclude>
-    <ClInclude Include="targetver.h">
-      <Filter>Header</Filter>
-    </ClInclude>
-    <ClInclude Include="RenderSettings.h">
-      <Filter>Header</Filter>
-    </ClInclude>
     <ClInclude Include="common\Profile.h">
       <Filter>common</Filter>
     </ClInclude>
@@ -99,18 +90,18 @@
     <ClInclude Include="graphics\Vertex.h">
       <Filter>Header</Filter>
     </ClInclude>
+    <ClInclude Include="graphics\GraphicsDevice.h">
+      <Filter>Header</Filter>
+    </ClInclude>
+    <ClInclude Include="graphics\RenderSettings.h">
+      <Filter>Header</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
       <Filter>Source</Filter>
     </ClCompile>
     <ClCompile Include="FBXViewer.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
-    <ClCompile Include="GraphicsDevice.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
-    <ClCompile Include="RenderSettings.cpp">
       <Filter>Source</Filter>
     </ClCompile>
     <ClCompile Include="common\Profile.cpp">
@@ -145,6 +136,12 @@
     </ClCompile>
     <ClCompile Include="graphics\SMesh.cpp">
       <Filter>D3D</Filter>
+    </ClCompile>
+    <ClCompile Include="graphics\GraphicsDevice.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="graphics\RenderSettings.cpp">
+      <Filter>Source</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

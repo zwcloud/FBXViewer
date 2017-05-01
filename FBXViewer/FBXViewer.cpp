@@ -1,11 +1,11 @@
 ﻿#include "stdafx.h"
-#include "Windowsx.h"
-#include "GraphicsDevice.h"
-#include "D3D/SkinnedMesh.h"
-#include "D3D/Mesh.h"
-#include "D3D/Camera.h"
-#include "D3D/Axis.h"
-#include "D3D/Material.h"
+#include "Windows.h"
+#include "graphics/GraphicsDevice.h"
+#include "graphics/SkinnedMesh.h"
+#include "graphics/Mesh.h"
+#include "graphics/Camera.h"
+#include "graphics/Axis.h"
+#include "graphics/Material.h"
 
 #define MAX_LOADSTRING 100
 

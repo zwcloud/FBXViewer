@@ -5,8 +5,6 @@
 
 #pragma once
 
-#include "targetver.h"
-
 #define WIN32_LEAN_AND_MEAN             //  从 Windows 头文件中排除极少使用的信息
 // Windows 头文件:
 #include <windows.h>
@@ -44,6 +42,9 @@
 #include <d3dx9.h>
 
 #include <vld.h>
+
+#define GET_X_LPARAM(lp) ((int)(short)LOWORD(lp))
+#define GET_Y_LPARAM(lp) ((int)(short)HIWORD(lp))
 
 #pragma region debug functions
 void _DebugAssert(bool expression, const char *Text, ...);

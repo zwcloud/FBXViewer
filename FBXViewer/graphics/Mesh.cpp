@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include <d3d9.h>
 #include "common\Profile.h"
-#include "FBX\FbxExtractor.h"
+#include "fbx\FbxExtractor.h"
 #include "Mesh.h"
 #include "Vertex.h"
 

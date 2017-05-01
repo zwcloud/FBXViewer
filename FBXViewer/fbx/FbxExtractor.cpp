@@ -5,9 +5,9 @@
 #include <iostream>
 #include <cstdlib>
 
-#include "..\D3D\Mesh.h"
-#include "..\D3D\Skeleton.h"
-#include "..\D3D\Animation.h"
+#include "..\graphics\Mesh.h"
+#include "..\graphics\Skeleton.h"
+#include "..\graphics\Animation.h"
 
 #pragma region Dump开关
 #define DumpMeshTransformation
