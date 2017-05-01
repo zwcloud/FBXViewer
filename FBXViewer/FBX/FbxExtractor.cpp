@@ -5,7 +5,7 @@
 #include <iostream>
 #include <cstdlib>
 
-#include "..\D3D\TMesh.h"
+#include "..\D3D\Mesh.h"
 #include "..\D3D\Skeleton.h"
 #include "..\D3D\Animation.h"
 
@@ -29,30 +29,31 @@ struct BoneIndexWeight
     BoneIndexWeight(int index, double weight):Index(index),Weight(weight){}
 };
 
-FbxExtractor::FbxExtractor(const char* src) : lSdkManager(NULL), fbxScene(NULL), m_pSkeleton(NULL), m_pAnimation(NULL)
+FbxExtractor::FbxExtractor() : lSdkManager(NULL), fbxScene(NULL), m_pSkeleton(NULL), m_pAnimation(NULL)
 {
     bool bResult = false;
 
-    //根据需求，会在 渲染结束 / 保存到文件后 时被释放
-    //现在均在SkinnedMesh::Destroy()中释放
     m_pSkeleton = new Skeleton;
     m_pAnimation = new Animation;
 
     D3DXMatrixIdentity(&IdentityMatrix);
 
-    // init FBX SDK objects
+    // init FBX SDK
     InitializeSdkObjects(lSdkManager, fbxScene);
+}
 
+void FbxExtractor::DoExtract(const char * src)
+{
     // load FbxScene
-    bResult = LoadScene(lSdkManager, fbxScene, src);
-    DebugAssert(true==bResult && NULL!= fbxScene, "LoadScene failed\n");
+    bool bResult = LoadScene(lSdkManager, fbxScene, src);
+    DebugAssert(true == bResult && NULL != fbxScene, "LoadScene failed\n");
 
     ExtractHierarchy();
 
     unsigned int lMeshCount = Meshes.size();
-    for (unsigned int i=0; i<lMeshCount; i++)
+    for (unsigned int i = 0; i<lMeshCount; i++)
     {
-        TMesh* pMesh = Meshes.at(i);
+        Mesh* pMesh = Meshes.at(i);
         FbxMesh* pFbxMesh = FbxMeshes.at(i);
         // 提取骨骼索引和权值、提取骨骼相关矩阵
         bResult = ExtractWeight(pMesh, pFbxMesh);
@@ -81,7 +82,7 @@ FbxExtractor::FbxExtractor(const char* src) : lSdkManager(NULL), fbxScene(NULL),
         Dump output:
         Triangle 0
         ....
-        TexCood 
+        TexCood
         (0.437, 0.734)
         (0.335, 0.953)
         (0.417, 0.953)
@@ -96,7 +97,7 @@ FbxExtractor::FbxExtractor(const char* src) : lSdkManager(NULL), fbxScene(NULL),
     //Dump Bones
     DebugPrintf("Bones:\n");
     unsigned int nBones = m_pSkeleton->NumBones();
-    for (unsigned int i=0; i<nBones; i++)
+    for (unsigned int i = 0; i<nBones; i++)
     {
         DebugPrintf("%d\n", i);
         DumpBone(i, true, true);
@@ -136,8 +137,9 @@ void AddWeight(std::vector<BoneIndexWeight>& MeshWeight, BoneIndexWeight& input)
     MeshWeight.resize(4);
 }
 }
+
 //获取和某mesh中各顶点相关联的骨骼索引和相应的权重
-bool FbxExtractor::ExtractWeight(TMesh* pMesh, FbxMesh* pFbxMesh)
+bool FbxExtractor::ExtractWeight(Mesh* pMesh, FbxMesh* pFbxMesh)
 {
     // 一个Mesh只能有1个Deformer，并且必须是Skin deformer
     int lSkinCount = pFbxMesh->GetDeformerCount(FbxDeformer::eSkin);
@@ -310,7 +312,7 @@ void FbxExtractor::ExtractNode( FbxNode* pNode, int parentID )
     {//节点为FbxMesh
         FbxMesh* pFbxMesh = (FbxMesh*)pNodeAttribute;
         FbxMeshes.push_back(pFbxMesh);
-        TMesh* pMesh = ExtractStaticMesh(pFbxMesh);
+        Mesh* pMesh = ExtractStaticMesh(pFbxMesh);
         Meshes.push_back(pMesh);
     }
     else
@@ -331,7 +333,7 @@ void FbxExtractor::ExtractNode( FbxNode* pNode, int parentID )
     }
 }
 
-bool FbxExtractor::SplitVertexForUV(TMesh* pMesh)
+bool FbxExtractor::SplitVertexForUV(Mesh* pMesh)
 {
     //注意复制顶点时将Postion Normal Tangent Binormal BoneIndices BoneWeights也一同复制
 
@@ -412,12 +414,12 @@ bool FbxExtractor::SplitVertexForUV(TMesh* pMesh)
 }
 
 //从FbxMesh中提取静态Mesh信息
-TMesh* FbxExtractor::ExtractStaticMesh(FbxMesh* lMesh)
+Mesh* FbxExtractor::ExtractStaticMesh(FbxMesh* lMesh)
 {
     bool bResult = false;
     DebugAssert(lMesh->IsTriangleMesh(), "该mesh不是全部由三角形构成的\n");
 
-    TMesh* pMesh = new TMesh;   //根据需求，会在 渲染结束 / 保存到文件后 时被释放
+    Mesh* pMesh = new Mesh;   //根据需求，会在 渲染结束 / 保存到文件后 时被释放
     FbxNode* pNode = lMesh->GetNode();
 
 #if 0

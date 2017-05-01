@@ -1,18 +1,18 @@
 ﻿#include "stdafx.h"
 #include "SkinnedMesh.h"
-#include "FBX\FbxExtractor.h"
-#include "TMesh.h"
+#include "Mesh.h"
 #include "Skeleton.h"
 #include "Animation.h"
 #include "Profile.h"
+#include "Material.h"
+#include "Vertex.h"
 
 SkinnedMesh::SkinnedMesh( void ) :
-m_pFbxExtractor(NULL),
     m_pSkeleton(NULL),
     m_pAnimation(NULL),
     m_nBone(0)
 {
-    D3DXMatrixIdentity(&mMatWorld); //默认情况下，根骨骼的世界变换为没有变换
+    D3DXMatrixIdentity(&mMatWorld);
 
     ZeroMemory(&boneMeshMaterial, sizeof(D3DMATERIAL9));
     boneMeshMaterial.Ambient = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
@@ -24,66 +24,24 @@ SkinnedMesh::~SkinnedMesh( void )
 
 }
 
-
 void SkinnedMesh::Destroy()
 {
-    for (unsigned int i=0; i<mMeshes.size(); i++)
-    {
-        SAFE_DELETE(mMeshes.at(i));
-    }
-    SAFE_DELETE(m_pSkeleton);
-    SAFE_DELETE(m_pAnimation);
-
-    SAFE_DELETE(m_pFbxExtractor);
-
 }
 
-void SkinnedMesh::Load( const char* fbxSrc, IDirect3DDevice9* pDevice)
+void SkinnedMesh::Load(Skeleton* skeleton, Animation* animation, Material* material)
 {
-    bool bResult;
-    DebugPrintf("Extracting data from FBX file<%s>\n", fbxSrc);
-    Profile::Start("Extract data");
-    m_pFbxExtractor = new FbxExtractor(fbxSrc);
-    //Mesh列表
-    mMeshes = m_pFbxExtractor->GetMeshes();
-    //唯一的骨骼
-    m_pSkeleton = m_pFbxExtractor->GetSkeleton();
-    //唯一的动画
-    m_pAnimation = m_pFbxExtractor->GetAnimation();
-    Profile::End();
-
-    unsigned int nMeshes = mMeshes.size();
-    for(unsigned int i=0; i<nMeshes; i++)
-    {
-        TMesh* pMesh = mMeshes.at(i);
-        if (pMesh->m_bStatic)   //!!注意和SkinnedMesh::Render的逻辑保持一致
-        {
-            DebugPrintf("Mesh %s是静态的，略过\n", pMesh->mName.c_str());
-            continue;
-        }
-        pMesh->Convert(TMesh::MeshType::LEFTHANDED_YUP);
-        bResult = pMesh->Create(pDevice);
-        if (!bResult)
-        {
-            DebugAssert(false, "创建TMesh %s 失败\n", pMesh->mName.c_str());
-        }
-        else
-        {
-            DebugPrintf("创建了TMesh %s\n", pMesh->mName.c_str());
-        }
-    }
-
+    this->material = material;
+    this->m_pSkeleton = skeleton;
+    this->m_pAnimation = animation;
     SetBoneMatPtr();
-    Update(mMatWorld, 0U);
-
-    //骨骼世界坐标列表
+    //Update(mMatWorld, 0U);
     BuildBoneMesh();
 }
 
 void SkinnedMesh::SetBoneMatPtr()
 {
     unsigned int nBones = m_pSkeleton->NumBones();
-    DebugAssert(nBones<=MAX_BONE_COUNT, "骨骼数超过了50\n");
+    DebugAssert(nBones<=MAX_BONE_COUNT, "Number of bones exceeds 50.\n");
     mBoneCurrentMat.resize(nBones);
     m_nBone = nBones;
 }
@@ -114,6 +72,7 @@ void SkinnedMesh::SetPose( D3DXMATRIX matWorld, unsigned int time )
 }
 
 void SkinnedMesh::Render(IDirect3DDevice9* pDevice,
+    Mesh* mesh,
     const D3DXMATRIX& matWorld, const D3DXMATRIX& matView, const D3DXMATRIX& matProj, const D3DXVECTOR3& eyePoint)
 {
     D3DXMATRIX matViewProj;
@@ -127,22 +86,58 @@ void SkinnedMesh::Render(IDirect3DDevice9* pDevice,
         D3DXMatrixInverse(&matInverse, NULL, &pBone->matBone);
         D3DXMatrixMultiply(&mBoneCurrentMat[i], &matInverse, &pBone->matOffset);
     }
-    //设置Constants，绘制所有Mesh
-    unsigned int nMeshes = mMeshes.size();
-    for (unsigned int i=0; i<nMeshes; i++)
+    //设置Constants，绘制Mesh
+    MaterialUtil::SetConstants(pDevice, this->material, matWorld, matViewProj, eyePoint, &mBoneCurrentMat[0], m_nBone);
     {
-        TMesh* pMesh = mMeshes.at(i);
-        if (pMesh->m_bStatic)
-        {
-            //DebugPrintf("Mesh %s是静态的，略过Render\n", pMesh->mName.c_str());
-            continue;
-        }
-        pMesh->SetSkinnedConstants(pDevice, matWorld, matViewProj, eyePoint, &mBoneCurrentMat[0], m_nBone);
-        //pMesh->Update(pDevice, &mBoneCurrentMat[0], m_nBone);   //software skinning
-        pMesh->Draw(pDevice);
+        HRESULT hr = S_FALSE;
+
+        IDirect3DTexture9*& texture = material->Texture();
+        IDirect3DVertexShader9*& pVS = material->VS();
+        IDirect3DPixelShader9*& pPS = material->PS();
+        ID3DXConstantTable*& pCTVS = material->VSConstantTable();
+        ID3DXConstantTable*& pCTPS = material->PSConstantTable();
+
+        int nFaces = mesh->nFaces;
+        int nVertices = mesh->nVertices;
+        IDirect3DIndexBuffer9*& pIB = mesh->pIB;
+        IDirect3DVertexBuffer9*& pVB = mesh->pVB;
+        IDirect3DVertexDeclaration9*& pVD = mesh->pVD;
+
+        /* 默认情况下Mesh模型是在右手系下、Z向上、Y向内、X向右的（和3DSMAX中相同）, 且以逆序作为正面 */
+        pDevice->SetRenderState(D3DRS_CULLMODE, D3DCULL_CW);
+
+#define USE_ALPHATEST
+#ifdef USE_ALPHATEST
+        pDevice->SetRenderState(D3DRS_ALPHATESTENABLE, TRUE);
+        pDevice->SetRenderState(D3DRS_ALPHAREF, (DWORD)200);
+        pDevice->SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_GREATEREQUAL);
+#else
+        pDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
+        pDevice->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
+        pDevice->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
+#endif
+
+        V(pDevice->SetVertexShader(pVS));
+        V(pDevice->SetPixelShader(pPS));
+
+        V(pDevice->SetVertexDeclaration(pVD));
+        V(pDevice->SetIndices(pIB));
+        V(pDevice->SetStreamSource(0, pVB, 0, sizeof(Vertex)));
+        V(pDevice->SetTexture(0, texture));
+        V(pDevice->DrawIndexedPrimitive(D3DPT_TRIANGLELIST, 0, 0, nVertices, 0, nFaces));
+
+        V(pDevice->SetTexture(0, 0));
+
+#ifdef USE_ALPHATEST
+        pDevice->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE);
+#else
+        pDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
+#endif
     }
     RenderBoneMesh(pDevice, matWorld, matView, matProj);
 }
+
+#pragma region Debug
 
 void SkinnedMesh::BuildBoneMesh()
 {
@@ -234,6 +229,4 @@ void SkinnedMesh::RenderBoneMesh(IDirect3DDevice9* pDevice,
     V(pDevice->SetRenderState(D3DRS_LIGHTING, TRUE));
 }
 
-
-
-
+#pragma endregion

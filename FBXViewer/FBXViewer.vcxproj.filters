@@ -81,13 +81,22 @@
     <ClInclude Include="D3D\SMesh.h">
       <Filter>D3D</Filter>
     </ClInclude>
-    <ClInclude Include="D3D\TMesh.h">
-      <Filter>D3D</Filter>
-    </ClInclude>
     <ClInclude Include="Profile.h">
       <Filter>common</Filter>
     </ClInclude>
     <ClInclude Include="targetver.h">
+      <Filter>Header</Filter>
+    </ClInclude>
+    <ClInclude Include="D3D\Vertex.h">
+      <Filter>Header</Filter>
+    </ClInclude>
+    <ClInclude Include="D3D\Mesh.h">
+      <Filter>D3D</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderSettings.h">
+      <Filter>Header</Filter>
+    </ClInclude>
+    <ClInclude Include="D3D\Material.h">
       <Filter>Header</Filter>
     </ClInclude>
   </ItemGroup>
@@ -125,11 +134,17 @@
     <ClCompile Include="D3D\SMesh.cpp">
       <Filter>D3D</Filter>
     </ClCompile>
-    <ClCompile Include="D3D\TMesh.cpp">
-      <Filter>D3D</Filter>
-    </ClCompile>
     <ClCompile Include="Profile.cpp">
       <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="D3D\Mesh.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="RenderSettings.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="D3D\Material.cpp">
+      <Filter>Source</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

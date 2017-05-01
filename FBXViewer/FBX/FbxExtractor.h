@@ -6,7 +6,7 @@
 #include <d3d9.h>
 #include <d3dx9.h>
 
-class TMesh;
+class Mesh;
 class Skeleton;
 class Animation;
 /*
@@ -16,10 +16,12 @@ class Animation;
 class FbxExtractor
 {
 public:
-    FbxExtractor(const char* src);
+    FbxExtractor();
     ~FbxExtractor();
 
-    inline std::vector<TMesh*> GetMeshes() const {return Meshes;}
+    void DoExtract(const char * src);
+
+    inline std::vector<Mesh*> GetMeshes() const {return Meshes;}
 
     inline Skeleton* GetSkeleton() const {return m_pSkeleton;}
 
@@ -27,7 +29,7 @@ public:
 
 private:
     //Mesh 列表
-    std::vector<TMesh*> Meshes;
+    std::vector<Mesh*> Meshes;
     std::vector<FbxMesh*> FbxMeshes;
 
     //唯一的骨骼
@@ -45,9 +47,9 @@ private:
     FbxExtractor& operator = (const FbxExtractor& );
     //Mesh
     bool isUVExist(const D3DXVECTOR2& uv);
-    bool SplitVertexForUV(TMesh* pMesh);
-    TMesh* ExtractStaticMesh(FbxMesh* lMesh);
-    bool ExtractWeight(TMesh* pMesh, FbxMesh* pFbxMesh);
+    bool SplitVertexForUV(Mesh* pMesh);
+    Mesh* ExtractStaticMesh(FbxMesh* lMesh);
+    bool ExtractWeight(Mesh* pMesh, FbxMesh* pFbxMesh);
     //Bone
     void ExtractHierarchy();
     void ExtractNode(FbxNode* pNode, int parentID);

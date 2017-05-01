@@ -1,6 +1,5 @@
 ﻿#include "stdafx.h"
 #include "GraphicsDevice.h"
-#include "D3D\TMesh.h"
 
 GraphicsDevice* GraphicsDevice::instance = NULL;
 

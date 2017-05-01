@@ -2,9 +2,10 @@
 #include "Windowsx.h"
 #include "GraphicsDevice.h"
 #include "D3D/SkinnedMesh.h"
-#include "D3D/TMesh.h"
+#include "D3D/Mesh.h"
 #include "D3D/Camera.h"
 #include "D3D/Axis.h"
+#include "D3D/Material.h"
 
 #define MAX_LOADSTRING 100
 
@@ -28,6 +29,10 @@ D3DXMATRIX fixedView;
 // 需要绘制的Mesh
 StaticMesh::AxisMesh axis;
 StaticMesh::CubeMesh cube;
+Mesh* targetMesh;
+Skeleton* targetSkeleton;
+Animation* targetAnimation;
+Material* targetMaterial;//TODO load this from file
 SkinnedMesh skinMesh;
 
 //鼠标输入相关参数
@@ -169,7 +174,10 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 	//Load mesh from file
     char filePath[MAX_PATH];
     GetTestFileName(filePath);// get testing file path
-    skinMesh.Load(filePath, pGDevice->m_pD3DDevice);
+    MeshUtil::LoadMeshFromFile(filePath, targetMesh, targetSkeleton, targetAnimation);
+    MeshUtil::Create(*targetMesh, pGDevice->m_pD3DDevice);
+    targetMaterial = MaterialUtil::CreateMaterial(pGDevice->m_pD3DDevice, "<nodiffusemap>");
+    skinMesh.Load(targetSkeleton, targetAnimation, targetMaterial);
 
     //Set up initial projection matrix
     D3DXMatrixIdentity(&identity);
@@ -312,7 +320,7 @@ void Render( unsigned int _dt )
     pGDevice->BeginScene();
 
     //Render skinmesh
-    skinMesh.Render(pGDevice->m_pD3DDevice, identity, view, proj, eyePoint);
+    skinMesh.Render(pGDevice->m_pD3DDevice, targetMesh, identity, view, proj, eyePoint);
 
     //Render cube
     {
