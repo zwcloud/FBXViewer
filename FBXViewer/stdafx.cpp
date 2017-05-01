@@ -83,7 +83,7 @@ void DebugPrintf(const wchar_t *Text, ...)
     OutputDebugStringW(_Text);
 }
 
-#define TEST_FILE_PATH "FBX/inputFile.txt"
+#define TEST_FILE_PATH "inputFile.txt"
 const void GetTestFileName(char* buffer)
 {
     FILE* fp = fopen(TEST_FILE_PATH, "r");

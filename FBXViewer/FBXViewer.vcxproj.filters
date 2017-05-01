@@ -23,7 +23,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <None Include="FBX\inputFile.txt" />
     <None Include="shader\skinned.psh">
       <Filter>shader</Filter>
     </None>
@@ -49,6 +48,7 @@
       <Filter>shader</Filter>
     </None>
     <None Include="scorpid.FBX" />
+    <None Include="inputFile.txt" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -65,12 +65,6 @@
     </ClInclude>
     <ClInclude Include="D3D\SkinnedMesh.h">
       <Filter>D3D</Filter>
-    </ClInclude>
-    <ClInclude Include="FBX\FBXCommon.h">
-      <Filter>FBX</Filter>
-    </ClInclude>
-    <ClInclude Include="FBX\FbxExtractor.h">
-      <Filter>FBX</Filter>
     </ClInclude>
     <ClInclude Include="D3D\Camera.h">
       <Filter>D3D</Filter>
@@ -99,6 +93,12 @@
     <ClInclude Include="common\Profile.h">
       <Filter>common</Filter>
     </ClInclude>
+    <ClInclude Include="FbxExtractor\FBXCommon.h">
+      <Filter>FBX</Filter>
+    </ClInclude>
+    <ClInclude Include="FbxExtractor\FbxExtractor.h">
+      <Filter>FBX</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -118,12 +118,6 @@
     </ClCompile>
     <ClCompile Include="D3D\SkinnedMesh.cpp">
       <Filter>D3D</Filter>
-    </ClCompile>
-    <ClCompile Include="FBX\FBXCommon.cpp">
-      <Filter>FBX</Filter>
-    </ClCompile>
-    <ClCompile Include="FBX\FbxExtractor.cpp">
-      <Filter>FBX</Filter>
     </ClCompile>
     <ClCompile Include="D3D\Camera.cpp">
       <Filter>D3D</Filter>
@@ -145,6 +139,12 @@
     </ClCompile>
     <ClCompile Include="common\Profile.cpp">
       <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="FbxExtractor\FBXCommon.cpp">
+      <Filter>FBX</Filter>
+    </ClCompile>
+    <ClCompile Include="FbxExtractor\FbxExtractor.cpp">
+      <Filter>FBX</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
