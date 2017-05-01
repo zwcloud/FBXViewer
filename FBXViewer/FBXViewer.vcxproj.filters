@@ -23,32 +23,32 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <None Include="shader\skinned.psh">
-      <Filter>shader</Filter>
-    </None>
-    <None Include="shader\skinned.vsh">
-      <Filter>shader</Filter>
-    </None>
-    <None Include="shader\static.psh">
-      <Filter>shader</Filter>
-    </None>
-    <None Include="shader\static.vsh">
-      <Filter>shader</Filter>
-    </None>
-    <None Include="shader\staticTextured.psh">
-      <Filter>shader</Filter>
-    </None>
-    <None Include="shader\staticTextured.vsh">
-      <Filter>shader</Filter>
-    </None>
-    <None Include="shader\staticColorTextured.psh">
-      <Filter>shader</Filter>
-    </None>
-    <None Include="shader\staticColorTextured.vsh">
-      <Filter>shader</Filter>
-    </None>
-    <None Include="scorpid.FBX" />
     <None Include="inputFile.txt" />
+    <None Include="resources\shader\skinned.psh">
+      <Filter>shader</Filter>
+    </None>
+    <None Include="resources\shader\skinned.vsh">
+      <Filter>shader</Filter>
+    </None>
+    <None Include="resources\shader\static.psh">
+      <Filter>shader</Filter>
+    </None>
+    <None Include="resources\shader\static.vsh">
+      <Filter>shader</Filter>
+    </None>
+    <None Include="resources\shader\staticColorTextured.psh">
+      <Filter>shader</Filter>
+    </None>
+    <None Include="resources\shader\staticColorTextured.vsh">
+      <Filter>shader</Filter>
+    </None>
+    <None Include="resources\shader\staticTextured.psh">
+      <Filter>shader</Filter>
+    </None>
+    <None Include="resources\shader\staticTextured.vsh">
+      <Filter>shader</Filter>
+    </None>
+    <None Include="resources\scorpid.FBX" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -148,6 +148,6 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <Image Include="image\box.png" />
+    <Image Include="resources\image\box.png" />
   </ItemGroup>
 </Project>

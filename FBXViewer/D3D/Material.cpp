@@ -56,7 +56,7 @@ namespace MaterialUtil
             ID3DXBuffer* ShaderBuf;
 
             //vertex shader
-            hr = D3DXCompileShaderFromFile("shader/skinned.vsh", NULL, NULL, "main", "vs_3_0", NULL, &ShaderBuf, &errorBuf, &pCTVS);
+            hr = D3DXCompileShaderFromFile("resources/shader/skinned.vsh", NULL, NULL, "main", "vs_3_0", NULL, &ShaderBuf, &errorBuf, &pCTVS);
             if (FAILED(hr) && errorBuf != 0 && errorBuf->GetBufferPointer() != 0)
             {
                 OutputDebugStringA((char*)errorBuf->GetBufferPointer());
@@ -69,7 +69,7 @@ namespace MaterialUtil
             SAFE_RELEASE(errorBuf);
 
             //pixel shader
-            hr = D3DXCompileShaderFromFile("shader/skinned.psh", NULL, NULL, "main", "ps_3_0", NULL, &ShaderBuf, &errorBuf, &pCTPS);
+            hr = D3DXCompileShaderFromFile("resources/shader/skinned.psh", NULL, NULL, "main", "ps_3_0", NULL, &ShaderBuf, &errorBuf, &pCTPS);
             if (FAILED(hr) && errorBuf != 0 && errorBuf->GetBufferPointer() != 0)
             {
                 OutputDebugStringA((char*)errorBuf->GetBufferPointer());

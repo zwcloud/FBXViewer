@@ -203,12 +203,12 @@ bool SMesh::Create( IDirect3DDevice9* pDevice )
         }
 
         //shader
-        char* vertexShaderPathForPC = "shader/static.vsh";
-        char* pixelShaderPathForPC = "shader/static.psh";
-        char* vertexShaderPathForPT = "shader/staticTextured.vsh";
-        char* pixelShaderPathForPT = "shader/staticTextured.psh";
-        char* vertexShaderPathForPCT = "shader/staticColorTextured.vsh";
-        char* pixelShaderPathForPCT = "shader/staticColorTextured.psh";
+        char* vertexShaderPathForPC = "resources/shader/static.vsh";
+        char* pixelShaderPathForPC = "resources/shader/static.psh";
+        char* vertexShaderPathForPT = "resources/shader/staticTextured.vsh";
+        char* pixelShaderPathForPT = "resources/shader/staticTextured.psh";
+        char* vertexShaderPathForPCT = "resources/shader/staticColorTextured.vsh";
+        char* pixelShaderPathForPCT = "resources/shader/staticColorTextured.psh";
         char* vertexShaderPath = NULL;
         char* pixelShaderPath = NULL;
         switch(mVertexType)

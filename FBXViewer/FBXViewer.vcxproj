@@ -79,15 +79,15 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <None Include="inputFile.txt" />
-    <None Include="scorpid.FBX" />
-    <None Include="shader\skinned.psh" />
-    <None Include="shader\skinned.vsh" />
-    <None Include="shader\static.psh" />
-    <None Include="shader\static.vsh" />
-    <None Include="shader\staticColorTextured.psh" />
-    <None Include="shader\staticColorTextured.vsh" />
-    <None Include="shader\staticTextured.psh" />
-    <None Include="shader\staticTextured.vsh" />
+    <None Include="resources\scorpid.FBX" />
+    <None Include="resources\shader\skinned.psh" />
+    <None Include="resources\shader\skinned.vsh" />
+    <None Include="resources\shader\static.psh" />
+    <None Include="resources\shader\static.vsh" />
+    <None Include="resources\shader\staticColorTextured.psh" />
+    <None Include="resources\shader\staticColorTextured.vsh" />
+    <None Include="resources\shader\staticTextured.psh" />
+    <None Include="resources\shader\staticTextured.vsh" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="D3D\Animation.h" />
@@ -128,7 +128,7 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <Image Include="image\box.png" />
+    <Image Include="resources\image\box.png" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
