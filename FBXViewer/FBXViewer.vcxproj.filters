@@ -57,37 +57,10 @@
     <ClInclude Include="GraphicsDevice.h">
       <Filter>Header</Filter>
     </ClInclude>
-    <ClInclude Include="D3D\Animation.h">
-      <Filter>D3D</Filter>
-    </ClInclude>
-    <ClInclude Include="D3D\Skeleton.h">
-      <Filter>D3D</Filter>
-    </ClInclude>
-    <ClInclude Include="D3D\SkinnedMesh.h">
-      <Filter>D3D</Filter>
-    </ClInclude>
-    <ClInclude Include="D3D\Camera.h">
-      <Filter>D3D</Filter>
-    </ClInclude>
-    <ClInclude Include="D3D\Axis.h">
-      <Filter>D3D</Filter>
-    </ClInclude>
-    <ClInclude Include="D3D\SMesh.h">
-      <Filter>D3D</Filter>
-    </ClInclude>
     <ClInclude Include="targetver.h">
       <Filter>Header</Filter>
     </ClInclude>
-    <ClInclude Include="D3D\Vertex.h">
-      <Filter>Header</Filter>
-    </ClInclude>
-    <ClInclude Include="D3D\Mesh.h">
-      <Filter>D3D</Filter>
-    </ClInclude>
     <ClInclude Include="RenderSettings.h">
-      <Filter>Header</Filter>
-    </ClInclude>
-    <ClInclude Include="D3D\Material.h">
       <Filter>Header</Filter>
     </ClInclude>
     <ClInclude Include="common\Profile.h">
@@ -98,6 +71,33 @@
     </ClInclude>
     <ClInclude Include="fbx\FbxExtractor.h">
       <Filter>FBX</Filter>
+    </ClInclude>
+    <ClInclude Include="graphics\Animation.h">
+      <Filter>D3D</Filter>
+    </ClInclude>
+    <ClInclude Include="graphics\Axis.h">
+      <Filter>D3D</Filter>
+    </ClInclude>
+    <ClInclude Include="graphics\Camera.h">
+      <Filter>D3D</Filter>
+    </ClInclude>
+    <ClInclude Include="graphics\Material.h">
+      <Filter>Header</Filter>
+    </ClInclude>
+    <ClInclude Include="graphics\Mesh.h">
+      <Filter>D3D</Filter>
+    </ClInclude>
+    <ClInclude Include="graphics\Skeleton.h">
+      <Filter>D3D</Filter>
+    </ClInclude>
+    <ClInclude Include="graphics\SkinnedMesh.h">
+      <Filter>D3D</Filter>
+    </ClInclude>
+    <ClInclude Include="graphics\SMesh.h">
+      <Filter>D3D</Filter>
+    </ClInclude>
+    <ClInclude Include="graphics\Vertex.h">
+      <Filter>Header</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -110,31 +110,7 @@
     <ClCompile Include="GraphicsDevice.cpp">
       <Filter>Source</Filter>
     </ClCompile>
-    <ClCompile Include="D3D\Animation.cpp">
-      <Filter>D3D</Filter>
-    </ClCompile>
-    <ClCompile Include="D3D\Skeleton.cpp">
-      <Filter>D3D</Filter>
-    </ClCompile>
-    <ClCompile Include="D3D\SkinnedMesh.cpp">
-      <Filter>D3D</Filter>
-    </ClCompile>
-    <ClCompile Include="D3D\Camera.cpp">
-      <Filter>D3D</Filter>
-    </ClCompile>
-    <ClCompile Include="D3D\Axis.cpp">
-      <Filter>D3D</Filter>
-    </ClCompile>
-    <ClCompile Include="D3D\SMesh.cpp">
-      <Filter>D3D</Filter>
-    </ClCompile>
-    <ClCompile Include="D3D\Mesh.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
     <ClCompile Include="RenderSettings.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
-    <ClCompile Include="D3D\Material.cpp">
       <Filter>Source</Filter>
     </ClCompile>
     <ClCompile Include="common\Profile.cpp">
@@ -145,6 +121,30 @@
     </ClCompile>
     <ClCompile Include="fbx\FbxExtractor.cpp">
       <Filter>FBX</Filter>
+    </ClCompile>
+    <ClCompile Include="graphics\Animation.cpp">
+      <Filter>D3D</Filter>
+    </ClCompile>
+    <ClCompile Include="graphics\Axis.cpp">
+      <Filter>D3D</Filter>
+    </ClCompile>
+    <ClCompile Include="graphics\Camera.cpp">
+      <Filter>D3D</Filter>
+    </ClCompile>
+    <ClCompile Include="graphics\Material.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="graphics\Mesh.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="graphics\Skeleton.cpp">
+      <Filter>D3D</Filter>
+    </ClCompile>
+    <ClCompile Include="graphics\SkinnedMesh.cpp">
+      <Filter>D3D</Filter>
+    </ClCompile>
+    <ClCompile Include="graphics\SMesh.cpp">
+      <Filter>D3D</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

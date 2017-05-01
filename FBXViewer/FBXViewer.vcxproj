@@ -90,36 +90,36 @@
     <None Include="resources\shader\staticTextured.vsh" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="D3D\Animation.h" />
-    <ClInclude Include="D3D\Axis.h" />
-    <ClInclude Include="D3D\Camera.h" />
-    <ClInclude Include="D3D\Mesh.h" />
-    <ClInclude Include="D3D\Skeleton.h" />
-    <ClInclude Include="D3D\SkinnedMesh.h" />
-    <ClInclude Include="D3D\SMesh.h" />
-    <ClInclude Include="D3D\Vertex.h" />
+    <ClInclude Include="graphics\Animation.h" />
+    <ClInclude Include="graphics\Axis.h" />
+    <ClInclude Include="graphics\Camera.h" />
+    <ClInclude Include="graphics\Mesh.h" />
+    <ClInclude Include="graphics\Skeleton.h" />
+    <ClInclude Include="graphics\SkinnedMesh.h" />
+    <ClInclude Include="graphics\SMesh.h" />
+    <ClInclude Include="graphics\Vertex.h" />
     <ClInclude Include="fbx\FBXCommon.h" />
     <ClInclude Include="fbx\FbxExtractor.h" />
     <ClInclude Include="GraphicsDevice.h" />
-    <ClInclude Include="D3D\Material.h" />
+    <ClInclude Include="graphics\Material.h" />
     <ClInclude Include="common\Profile.h" />
     <ClInclude Include="RenderSettings.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="D3D\Animation.cpp" />
-    <ClCompile Include="D3D\Axis.cpp" />
-    <ClCompile Include="D3D\Camera.cpp" />
-    <ClCompile Include="D3D\Mesh.cpp" />
-    <ClCompile Include="D3D\Skeleton.cpp" />
-    <ClCompile Include="D3D\SkinnedMesh.cpp" />
-    <ClCompile Include="D3D\SMesh.cpp" />
+    <ClCompile Include="graphics\Animation.cpp" />
+    <ClCompile Include="graphics\Axis.cpp" />
+    <ClCompile Include="graphics\Camera.cpp" />
+    <ClCompile Include="graphics\Mesh.cpp" />
+    <ClCompile Include="graphics\Skeleton.cpp" />
+    <ClCompile Include="graphics\SkinnedMesh.cpp" />
+    <ClCompile Include="graphics\SMesh.cpp" />
     <ClCompile Include="FBXViewer.cpp" />
     <ClCompile Include="fbx\FBXCommon.cpp" />
     <ClCompile Include="fbx\FbxExtractor.cpp" />
     <ClCompile Include="GraphicsDevice.cpp" />
-    <ClCompile Include="D3D\Material.cpp" />
+    <ClCompile Include="graphics\Material.cpp" />
     <ClCompile Include="common\Profile.cpp" />
     <ClCompile Include="RenderSettings.cpp" />
     <ClCompile Include="stdafx.cpp">
