@@ -3,7 +3,7 @@
 #include "Mesh.h"
 #include "Skeleton.h"
 #include "Animation.h"
-#include "Profile.h"
+#include "common\Profile.h"
 #include "Material.h"
 #include "Vertex.h"
 

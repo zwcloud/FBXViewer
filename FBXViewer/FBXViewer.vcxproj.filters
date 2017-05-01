@@ -81,9 +81,6 @@
     <ClInclude Include="D3D\SMesh.h">
       <Filter>D3D</Filter>
     </ClInclude>
-    <ClInclude Include="Profile.h">
-      <Filter>common</Filter>
-    </ClInclude>
     <ClInclude Include="targetver.h">
       <Filter>Header</Filter>
     </ClInclude>
@@ -98,6 +95,9 @@
     </ClInclude>
     <ClInclude Include="D3D\Material.h">
       <Filter>Header</Filter>
+    </ClInclude>
+    <ClInclude Include="common\Profile.h">
+      <Filter>common</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -134,9 +134,6 @@
     <ClCompile Include="D3D\SMesh.cpp">
       <Filter>D3D</Filter>
     </ClCompile>
-    <ClCompile Include="Profile.cpp">
-      <Filter>common</Filter>
-    </ClCompile>
     <ClCompile Include="D3D\Mesh.cpp">
       <Filter>Source</Filter>
     </ClCompile>
@@ -146,8 +143,11 @@
     <ClCompile Include="D3D\Material.cpp">
       <Filter>Source</Filter>
     </ClCompile>
+    <ClCompile Include="common\Profile.cpp">
+      <Filter>common</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <Image Include="box.png" />
+    <Image Include="image\box.png" />
   </ItemGroup>
 </Project>

@@ -199,7 +199,7 @@ namespace StaticMesh
         nVertex = 36;
         nPrimitive = 12;
 
-        material.DiffuseMap = "box.png";
+        material.DiffuseMap = "image/box.png";
 
         //准备数据
         D3DXVECTOR3 Origin = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
