@@ -1,7 +1,7 @@
 ﻿#include "stdafx.h"
 #include "Windows.h"
 #include "graphics/GraphicsDevice.h"
-#include "graphics/SkinnedMesh.h"
+#include "graphics/SkinnedMeshRenderer.h"
 #include "graphics/Mesh.h"
 #include "graphics/Camera.h"
 #include "graphics/Axis.h"
@@ -33,7 +33,7 @@ Mesh* targetMesh;
 Skeleton* targetSkeleton;
 Animation* targetAnimation;
 Material* targetMaterial;//TODO load this from file
-SkinnedMesh skinMesh;
+SkinnedMeshRenderer skinMeshRenderer;
 
 //鼠标输入相关参数
 D3DXVECTOR2 lastCursorPos(0.0f, 0.0f);
@@ -177,7 +177,7 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
     MeshUtil::LoadMeshFromFile(filePath, targetMesh, targetSkeleton, targetAnimation);
     MeshUtil::Create(*targetMesh, pGDevice->m_pD3DDevice);
     targetMaterial = MaterialUtil::CreateMaterial(pGDevice->m_pD3DDevice, "<nodiffusemap>");
-    skinMesh.Load(targetSkeleton, targetAnimation, targetMaterial);
+    skinMeshRenderer.Load(targetSkeleton, targetAnimation, targetMaterial);
 
     //Set up initial projection matrix
     D3DXMatrixIdentity(&identity);
@@ -304,7 +304,7 @@ void Update( unsigned int _dt )
     //Update scene objects
     cube.Update(currentCursorPos, identity, fixedView, pGDevice->m_matCubeProj);
     axis.Update();
-    skinMesh.Update(identity, _dt);
+    skinMeshRenderer.Update(identity, _dt);
 }
 
 
@@ -320,7 +320,7 @@ void Render( unsigned int _dt )
     pGDevice->BeginScene();
 
     //Render skinmesh
-    skinMesh.Render(pGDevice->m_pD3DDevice, targetMesh, identity, view, proj, eyePoint);
+    skinMeshRenderer.Render(pGDevice->m_pD3DDevice, targetMesh, identity, view, proj, eyePoint);
 
     //Render cube
     {
@@ -358,7 +358,7 @@ void Destroy()
 {
     axis.Destroy();
     cube.Destroy();
-    skinMesh.Destroy();
+    skinMeshRenderer.Destroy();
 
     GraphicsDevice::ReleaseInstance();
 }

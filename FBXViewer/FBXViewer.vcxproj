@@ -95,7 +95,7 @@
     <ClInclude Include="graphics\Camera.h" />
     <ClInclude Include="graphics\Mesh.h" />
     <ClInclude Include="graphics\Skeleton.h" />
-    <ClInclude Include="graphics\SkinnedMesh.h" />
+    <ClInclude Include="graphics\SkinnedMeshRenderer.h" />
     <ClInclude Include="graphics\SMesh.h" />
     <ClInclude Include="graphics\Vertex.h" />
     <ClInclude Include="fbx\FBXCommon.h" />
@@ -112,7 +112,7 @@
     <ClCompile Include="graphics\Camera.cpp" />
     <ClCompile Include="graphics\Mesh.cpp" />
     <ClCompile Include="graphics\Skeleton.cpp" />
-    <ClCompile Include="graphics\SkinnedMesh.cpp" />
+    <ClCompile Include="graphics\SkinnedMeshRenderer.cpp" />
     <ClCompile Include="graphics\SMesh.cpp" />
     <ClCompile Include="FBXViewer.cpp" />
     <ClCompile Include="fbx\FBXCommon.cpp" />

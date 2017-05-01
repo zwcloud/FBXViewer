@@ -81,9 +81,6 @@
     <ClInclude Include="graphics\Skeleton.h">
       <Filter>D3D</Filter>
     </ClInclude>
-    <ClInclude Include="graphics\SkinnedMesh.h">
-      <Filter>D3D</Filter>
-    </ClInclude>
     <ClInclude Include="graphics\SMesh.h">
       <Filter>D3D</Filter>
     </ClInclude>
@@ -95,6 +92,9 @@
     </ClInclude>
     <ClInclude Include="graphics\RenderSettings.h">
       <Filter>Header</Filter>
+    </ClInclude>
+    <ClInclude Include="graphics\SkinnedMeshRenderer.h">
+      <Filter>D3D</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -131,9 +131,6 @@
     <ClCompile Include="graphics\Skeleton.cpp">
       <Filter>D3D</Filter>
     </ClCompile>
-    <ClCompile Include="graphics\SkinnedMesh.cpp">
-      <Filter>D3D</Filter>
-    </ClCompile>
     <ClCompile Include="graphics\SMesh.cpp">
       <Filter>D3D</Filter>
     </ClCompile>
@@ -142,6 +139,9 @@
     </ClCompile>
     <ClCompile Include="graphics\RenderSettings.cpp">
       <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="graphics\SkinnedMeshRenderer.cpp">
+      <Filter>D3D</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -5,11 +5,11 @@ class Skeleton;
 class Animation;
 class Material;
 class Mesh;
-class SkinnedMesh
+class SkinnedMeshRenderer
 {
 public:
-    SkinnedMesh(void);
-    ~SkinnedMesh(void);
+    SkinnedMeshRenderer(void);
+    ~SkinnedMeshRenderer(void);
 
     Material* material;
 

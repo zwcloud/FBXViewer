@@ -1,5 +1,5 @@
 ﻿#include "stdafx.h"
-#include "SkinnedMesh.h"
+#include "SkinnedMeshRenderer.h"
 #include "Mesh.h"
 #include "Skeleton.h"
 #include "Animation.h"
@@ -7,7 +7,7 @@
 #include "Material.h"
 #include "Vertex.h"
 
-SkinnedMesh::SkinnedMesh( void ) :
+SkinnedMeshRenderer::SkinnedMeshRenderer( void ) :
     m_pSkeleton(NULL),
     m_pAnimation(NULL),
     m_nBone(0)
@@ -19,16 +19,16 @@ SkinnedMesh::SkinnedMesh( void ) :
     boneMeshMaterial.Diffuse = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
 }
 
-SkinnedMesh::~SkinnedMesh( void )
+SkinnedMeshRenderer::~SkinnedMeshRenderer( void )
 {
 
 }
 
-void SkinnedMesh::Destroy()
+void SkinnedMeshRenderer::Destroy()
 {
 }
 
-void SkinnedMesh::Load(Skeleton* skeleton, Animation* animation, Material* material)
+void SkinnedMeshRenderer::Load(Skeleton* skeleton, Animation* animation, Material* material)
 {
     this->material = material;
     this->m_pSkeleton = skeleton;
@@ -38,7 +38,7 @@ void SkinnedMesh::Load(Skeleton* skeleton, Animation* animation, Material* mater
     BuildBoneMesh();
 }
 
-void SkinnedMesh::SetBoneMatPtr()
+void SkinnedMeshRenderer::SetBoneMatPtr()
 {
     unsigned int nBones = m_pSkeleton->NumBones();
     DebugAssert(nBones<=MAX_BONE_COUNT, "Number of bones exceeds 50.\n");
@@ -46,18 +46,18 @@ void SkinnedMesh::SetBoneMatPtr()
     m_nBone = nBones;
 }
 
-void SkinnedMesh::Update( D3DXMATRIX matWorld, unsigned int time )
+void SkinnedMeshRenderer::Update( D3DXMATRIX matWorld, unsigned int time )
 {
     UpdateAnimation(matWorld, time);
     UpdateBoneMesh(matWorld, time);
 }
 
-void SkinnedMesh::UpdateAnimation( D3DXMATRIX matWorld, unsigned int time )
+void SkinnedMeshRenderer::UpdateAnimation( D3DXMATRIX matWorld, unsigned int time )
 {
     SetPose(matWorld, time);
 }
 
-void SkinnedMesh::SetPose( D3DXMATRIX matWorld, unsigned int time )
+void SkinnedMeshRenderer::SetPose( D3DXMATRIX matWorld, unsigned int time )
 {
     mMatWorld = matWorld;
     unsigned int lDuration = m_pAnimation->GetDuration();
@@ -71,7 +71,7 @@ void SkinnedMesh::SetPose( D3DXMATRIX matWorld, unsigned int time )
     }
 }
 
-void SkinnedMesh::Render(IDirect3DDevice9* pDevice,
+void SkinnedMeshRenderer::Render(IDirect3DDevice9* pDevice,
     Mesh* mesh,
     const D3DXMATRIX& matWorld, const D3DXMATRIX& matView, const D3DXMATRIX& matProj, const D3DXVECTOR3& eyePoint)
 {
@@ -139,7 +139,7 @@ void SkinnedMesh::Render(IDirect3DDevice9* pDevice,
 
 #pragma region Debug
 
-void SkinnedMesh::BuildBoneMesh()
+void SkinnedMeshRenderer::BuildBoneMesh()
 {
     unsigned int nBones = m_pSkeleton->NumBones();
     for (unsigned int i=0; i<nBones; i++)
@@ -171,7 +171,7 @@ void SkinnedMesh::BuildBoneMesh()
     }
 }
 
-void SkinnedMesh::UpdateBoneMesh( const D3DXMATRIX& matWorld, unsigned int time )
+void SkinnedMeshRenderer::UpdateBoneMesh( const D3DXMATRIX& matWorld, unsigned int time )
 {
     mBonePositions.resize(0);
     unsigned int nBones = m_pSkeleton->NumBones();
@@ -209,7 +209,7 @@ void SkinnedMesh::UpdateBoneMesh( const D3DXMATRIX& matWorld, unsigned int time 
     //DebugPrintf("---------------------------\n");
 }
 
-void SkinnedMesh::RenderBoneMesh(IDirect3DDevice9* pDevice,
+void SkinnedMeshRenderer::RenderBoneMesh(IDirect3DDevice9* pDevice,
     const D3DXMATRIX& matWorld, const D3DXMATRIX& matView, const D3DXMATRIX& matProj)
 {
     HRESULT hr;
