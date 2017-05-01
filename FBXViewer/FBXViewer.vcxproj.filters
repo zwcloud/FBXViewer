@@ -93,10 +93,10 @@
     <ClInclude Include="common\Profile.h">
       <Filter>common</Filter>
     </ClInclude>
-    <ClInclude Include="FbxExtractor\FBXCommon.h">
+    <ClInclude Include="fbx\FBXCommon.h">
       <Filter>FBX</Filter>
     </ClInclude>
-    <ClInclude Include="FbxExtractor\FbxExtractor.h">
+    <ClInclude Include="fbx\FbxExtractor.h">
       <Filter>FBX</Filter>
     </ClInclude>
   </ItemGroup>
@@ -140,10 +140,10 @@
     <ClCompile Include="common\Profile.cpp">
       <Filter>common</Filter>
     </ClCompile>
-    <ClCompile Include="FbxExtractor\FBXCommon.cpp">
+    <ClCompile Include="fbx\FBXCommon.cpp">
       <Filter>FBX</Filter>
     </ClCompile>
-    <ClCompile Include="FbxExtractor\FbxExtractor.cpp">
+    <ClCompile Include="fbx\FbxExtractor.cpp">
       <Filter>FBX</Filter>
     </ClCompile>
   </ItemGroup>

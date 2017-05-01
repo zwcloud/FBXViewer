@@ -98,8 +98,8 @@
     <ClInclude Include="D3D\SkinnedMesh.h" />
     <ClInclude Include="D3D\SMesh.h" />
     <ClInclude Include="D3D\Vertex.h" />
-    <ClInclude Include="FbxExtractor\FBXCommon.h" />
-    <ClInclude Include="FbxExtractor\FbxExtractor.h" />
+    <ClInclude Include="fbx\FBXCommon.h" />
+    <ClInclude Include="fbx\FbxExtractor.h" />
     <ClInclude Include="GraphicsDevice.h" />
     <ClInclude Include="D3D\Material.h" />
     <ClInclude Include="common\Profile.h" />
@@ -116,8 +116,8 @@
     <ClCompile Include="D3D\SkinnedMesh.cpp" />
     <ClCompile Include="D3D\SMesh.cpp" />
     <ClCompile Include="FBXViewer.cpp" />
-    <ClCompile Include="FbxExtractor\FBXCommon.cpp" />
-    <ClCompile Include="FbxExtractor\FbxExtractor.cpp" />
+    <ClCompile Include="fbx\FBXCommon.cpp" />
+    <ClCompile Include="fbx\FbxExtractor.cpp" />
     <ClCompile Include="GraphicsDevice.cpp" />
     <ClCompile Include="D3D\Material.cpp" />
     <ClCompile Include="common\Profile.cpp" />
