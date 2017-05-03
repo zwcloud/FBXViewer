@@ -345,8 +345,7 @@ FbxAMatrix GetLocalTransformation(FbxNode* pNode)
     return FbxAMatrix(lT, lQ, lS);
 }
 
-//FbxAMatrix is column major
-//D3DXMATRIX is row major
+//FbxAMatrix uses the same layout as D3DXMATRIX (see test/MakeSureFbxAMatrixIsTheSameAsD3DXMATRIX)
 D3DXMATRIX FbxAMatrix_to_D3DXMATRIX(const FbxAMatrix& lMatrix)
 {
     D3DXMATRIX mat(
