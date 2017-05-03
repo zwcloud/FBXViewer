@@ -7,6 +7,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "FBXViewer", "build\Applicat
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "FBXViewerLib", "build\StaticLibrary\FBXViewerLib.vcxproj", "{A1543AD2-ED55-4612-A101-DB39FDAE693F}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "test", "test\test.vcxproj", "{7BD7A6C8-0E66-48EF-A6C7-E4CDB4E852C8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -21,6 +23,10 @@ Global
 		{A1543AD2-ED55-4612-A101-DB39FDAE693F}.Debug|Win32.Build.0 = Debug|Win32
 		{A1543AD2-ED55-4612-A101-DB39FDAE693F}.Release|Win32.ActiveCfg = Release|Win32
 		{A1543AD2-ED55-4612-A101-DB39FDAE693F}.Release|Win32.Build.0 = Release|Win32
+		{7BD7A6C8-0E66-48EF-A6C7-E4CDB4E852C8}.Debug|Win32.ActiveCfg = Debug|Win32
+		{7BD7A6C8-0E66-48EF-A6C7-E4CDB4E852C8}.Debug|Win32.Build.0 = Debug|Win32
+		{7BD7A6C8-0E66-48EF-A6C7-E4CDB4E852C8}.Release|Win32.ActiveCfg = Release|Win32
+		{7BD7A6C8-0E66-48EF-A6C7-E4CDB4E852C8}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

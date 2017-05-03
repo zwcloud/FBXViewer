@@ -1,5 +1,7 @@
 ﻿#pragma once
 #include <fbxsdk.h>
+#include <d3d9.h>
+#include <d3dx9.h>
 
 void InitializeSdkObjects(FbxManager*& pManager, FbxScene*& pScene);
 void DestroySdkObjects(FbxManager* pManager, bool pExitStatus);

@@ -1,5 +1,6 @@
 ﻿#pragma once
 #include "SMesh.h"
+#include "common\Ray.h"
 
 extern D3DXVECTOR3 eyePoint;
 extern D3DXVECTOR3 lookAt;
