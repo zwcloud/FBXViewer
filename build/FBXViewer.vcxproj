@@ -109,57 +109,57 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <None Include="..\src\inputFile.txt" />
-    <None Include="..\src\resources\scorpid.FBX" />
-    <None Include="..\src\resources\shader\skinned.psh" />
-    <None Include="..\src\resources\shader\skinned.vsh" />
-    <None Include="..\src\resources\shader\static.psh" />
-    <None Include="..\src\resources\shader\static.vsh" />
-    <None Include="..\src\resources\shader\staticColorTextured.psh" />
-    <None Include="..\src\resources\shader\staticColorTextured.vsh" />
-    <None Include="..\src\resources\shader\staticTextured.psh" />
-    <None Include="..\src\resources\shader\staticTextured.vsh" />
+    <None Include="$(SolutionDir)src\inputFile.txt" />
+    <None Include="$(SolutionDir)src\resources\scorpid.FBX" />
+    <None Include="$(SolutionDir)src\resources\shader\skinned.psh" />
+    <None Include="$(SolutionDir)src\resources\shader\skinned.vsh" />
+    <None Include="$(SolutionDir)src\resources\shader\static.psh" />
+    <None Include="$(SolutionDir)src\resources\shader\static.vsh" />
+    <None Include="$(SolutionDir)src\resources\shader\staticColorTextured.psh" />
+    <None Include="$(SolutionDir)src\resources\shader\staticColorTextured.vsh" />
+    <None Include="$(SolutionDir)src\resources\shader\staticTextured.psh" />
+    <None Include="$(SolutionDir)src\resources\shader\staticTextured.vsh" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\src\graphics\Animation.h" />
-    <ClInclude Include="..\src\graphics\Axis.h" />
-    <ClInclude Include="..\src\graphics\Camera.h" />
-    <ClInclude Include="..\src\graphics\Mesh.h" />
-    <ClInclude Include="..\src\graphics\Skeleton.h" />
-    <ClInclude Include="..\src\graphics\SkinnedMeshRenderer.h" />
-    <ClInclude Include="..\src\graphics\SMesh.h" />
-    <ClInclude Include="..\src\graphics\Vertex.h" />
-    <ClInclude Include="..\src\fbx\FBXCommon.h" />
-    <ClInclude Include="..\src\fbx\FbxExtractor.h" />
-    <ClInclude Include="..\src\graphics\GraphicsDevice.h" />
-    <ClInclude Include="..\src\graphics\Material.h" />
-    <ClInclude Include="..\src\common\Profile.h" />
-    <ClInclude Include="..\src\graphics\RenderSettings.h" />
-    <ClInclude Include="..\src\stdafx.h" />
+    <ClInclude Include="$(SolutionDir)src\graphics\Animation.h" />
+    <ClInclude Include="$(SolutionDir)src\graphics\Axis.h" />
+    <ClInclude Include="$(SolutionDir)src\graphics\Camera.h" />
+    <ClInclude Include="$(SolutionDir)src\graphics\Mesh.h" />
+    <ClInclude Include="$(SolutionDir)src\graphics\Skeleton.h" />
+    <ClInclude Include="$(SolutionDir)src\graphics\SkinnedMeshRenderer.h" />
+    <ClInclude Include="$(SolutionDir)src\graphics\SMesh.h" />
+    <ClInclude Include="$(SolutionDir)src\graphics\Vertex.h" />
+    <ClInclude Include="$(SolutionDir)src\fbx\FBXCommon.h" />
+    <ClInclude Include="$(SolutionDir)src\fbx\FbxExtractor.h" />
+    <ClInclude Include="$(SolutionDir)src\graphics\GraphicsDevice.h" />
+    <ClInclude Include="$(SolutionDir)src\graphics\Material.h" />
+    <ClInclude Include="$(SolutionDir)src\common\Profile.h" />
+    <ClInclude Include="$(SolutionDir)src\graphics\RenderSettings.h" />
+    <ClInclude Include="$(SolutionDir)src\stdafx.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\src\graphics\Animation.cpp" />
-    <ClCompile Include="..\src\graphics\Axis.cpp" />
-    <ClCompile Include="..\src\graphics\Camera.cpp" />
-    <ClCompile Include="..\src\graphics\Mesh.cpp" />
-    <ClCompile Include="..\src\graphics\Skeleton.cpp" />
-    <ClCompile Include="..\src\graphics\SkinnedMeshRenderer.cpp" />
-    <ClCompile Include="..\src\graphics\SMesh.cpp" />
-    <ClCompile Include="..\src\FBXViewer.cpp" />
-    <ClCompile Include="..\src\fbx\FBXCommon.cpp" />
-    <ClCompile Include="..\src\fbx\FbxExtractor.cpp" />
-    <ClCompile Include="..\src\graphics\GraphicsDevice.cpp" />
-    <ClCompile Include="..\src\graphics\Material.cpp" />
-    <ClCompile Include="..\src\common\Profile.cpp" />
-    <ClCompile Include="..\src\graphics\RenderSettings.cpp" />
-    <ClCompile Include="..\src\stdafx.cpp">
+    <ClCompile Include="$(SolutionDir)src\graphics\Animation.cpp" />
+    <ClCompile Include="$(SolutionDir)src\graphics\Axis.cpp" />
+    <ClCompile Include="$(SolutionDir)src\graphics\Camera.cpp" />
+    <ClCompile Include="$(SolutionDir)src\graphics\Mesh.cpp" />
+    <ClCompile Include="$(SolutionDir)src\graphics\Skeleton.cpp" />
+    <ClCompile Include="$(SolutionDir)src\graphics\SkinnedMeshRenderer.cpp" />
+    <ClCompile Include="$(SolutionDir)src\graphics\SMesh.cpp" />
+    <ClCompile Include="$(SolutionDir)src\FBXViewer.cpp" />
+    <ClCompile Include="$(SolutionDir)src\fbx\FBXCommon.cpp" />
+    <ClCompile Include="$(SolutionDir)src\fbx\FbxExtractor.cpp" />
+    <ClCompile Include="$(SolutionDir)src\graphics\GraphicsDevice.cpp" />
+    <ClCompile Include="$(SolutionDir)src\graphics\Material.cpp" />
+    <ClCompile Include="$(SolutionDir)src\common\Profile.cpp" />
+    <ClCompile Include="$(SolutionDir)src\graphics\RenderSettings.cpp" />
+    <ClCompile Include="$(SolutionDir)src\stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Test|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <Image Include="..\src\resources\image\box.png" />
+    <Image Include="$(SolutionDir)src\resources\image\box.png" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

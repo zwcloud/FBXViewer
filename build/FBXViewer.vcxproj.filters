@@ -14,133 +14,133 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\src\inputFile.txt">
+    <None Include="src\inputFile.txt">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="..\src\resources\scorpid.FBX">
+    <None Include="src\resources\scorpid.FBX">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="..\src\resources\shader\skinned.psh">
+    <None Include="src\resources\shader\skinned.psh">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="..\src\resources\shader\skinned.vsh">
+    <None Include="src\resources\shader\skinned.vsh">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="..\src\resources\shader\static.psh">
+    <None Include="src\resources\shader\static.psh">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="..\src\resources\shader\static.vsh">
+    <None Include="src\resources\shader\static.vsh">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="..\src\resources\shader\staticColorTextured.psh">
+    <None Include="src\resources\shader\staticColorTextured.psh">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="..\src\resources\shader\staticColorTextured.vsh">
+    <None Include="src\resources\shader\staticColorTextured.vsh">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="..\src\resources\shader\staticTextured.psh">
+    <None Include="src\resources\shader\staticTextured.psh">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="..\src\resources\shader\staticTextured.vsh">
+    <None Include="src\resources\shader\staticTextured.vsh">
       <Filter>Resource Files</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\src\graphics\Animation.h">
+    <ClInclude Include="src\graphics\Animation.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\graphics\Axis.h">
+    <ClInclude Include="src\graphics\Axis.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\graphics\Camera.h">
+    <ClInclude Include="src\graphics\Camera.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\graphics\Mesh.h">
+    <ClInclude Include="src\graphics\Mesh.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\graphics\Skeleton.h">
+    <ClInclude Include="src\graphics\Skeleton.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\graphics\SkinnedMeshRenderer.h">
+    <ClInclude Include="src\graphics\SkinnedMeshRenderer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\graphics\SMesh.h">
+    <ClInclude Include="src\graphics\SMesh.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\graphics\Vertex.h">
+    <ClInclude Include="src\graphics\Vertex.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\fbx\FBXCommon.h">
+    <ClInclude Include="src\fbx\FBXCommon.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\fbx\FbxExtractor.h">
+    <ClInclude Include="src\fbx\FbxExtractor.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\graphics\GraphicsDevice.h">
+    <ClInclude Include="src\graphics\GraphicsDevice.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\graphics\Material.h">
+    <ClInclude Include="src\graphics\Material.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\common\Profile.h">
+    <ClInclude Include="src\common\Profile.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\graphics\RenderSettings.h">
+    <ClInclude Include="src\graphics\RenderSettings.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\stdafx.h">
+    <ClInclude Include="src\stdafx.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\src\graphics\Animation.cpp">
+    <ClCompile Include="src\graphics\Animation.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\graphics\Axis.cpp">
+    <ClCompile Include="src\graphics\Axis.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\graphics\Camera.cpp">
+    <ClCompile Include="src\graphics\Camera.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\graphics\Mesh.cpp">
+    <ClCompile Include="src\graphics\Mesh.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\graphics\Skeleton.cpp">
+    <ClCompile Include="src\graphics\Skeleton.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\graphics\SkinnedMeshRenderer.cpp">
+    <ClCompile Include="src\graphics\SkinnedMeshRenderer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\graphics\SMesh.cpp">
+    <ClCompile Include="src\graphics\SMesh.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\FBXViewer.cpp">
+    <ClCompile Include="src\FBXViewer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\fbx\FBXCommon.cpp">
+    <ClCompile Include="src\fbx\FBXCommon.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\fbx\FbxExtractor.cpp">
+    <ClCompile Include="src\fbx\FbxExtractor.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\graphics\GraphicsDevice.cpp">
+    <ClCompile Include="src\graphics\GraphicsDevice.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\graphics\Material.cpp">
+    <ClCompile Include="src\graphics\Material.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\common\Profile.cpp">
+    <ClCompile Include="src\common\Profile.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\graphics\RenderSettings.cpp">
+    <ClCompile Include="src\graphics\RenderSettings.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\stdafx.cpp">
+    <ClCompile Include="src\stdafx.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <Image Include="..\src\resources\image\box.png">
+    <Image Include="src\resources\image\box.png">
       <Filter>Resource Files</Filter>
     </Image>
   </ItemGroup>
