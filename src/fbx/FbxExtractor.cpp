@@ -719,7 +719,7 @@ Bone* FbxExtractor::ExtractBone(FbxNode* pNode, int parentID)
     pBone->mName = nodeName;
     FbxAMatrix matBone = pNode->EvaluateGlobalTransform();
     matBone.SetS(FbxVector4(1, 1, 1, 1));//force to 1,1,1. FIXME
-    pBone->matBone = FbxAMatrix_to_D3DXMATRIX(matBone);
+    pBone->matBone = FbxAMatrix_to_D3DXMATRIX(matBone);//!! Get bind pose matrix
 
     m_pSkeleton->mBones.push_back(pBone);
     this->FbxNodeMap[pBone] = pNode;
@@ -825,7 +825,7 @@ void FbxExtractor::ExtractCurve(Bone* bone, FbxAnimLayer* pAnimLayer)
 	for (unsigned int i = 0; i < frameCount; i++)
     {
         FbxTime t; t.SetFrame(i);
-        FbxAMatrix matGlobal = pNode->EvaluateGlobalTransform(t);
+        FbxAMatrix matGlobal = pNode->EvaluateGlobalTransform(t);//transform of bone in world space at time t
         unsigned short currentTime = atoi(t.GetTimeString(lTimeString, FbxUShort(256)));
         D3DXMATRIX d3dMat = FbxAMatrix_to_D3DXMATRIX(matGlobal);
         m_pAnimation->AddFrame(boneIndex, pNode->GetName(), currentTime, d3dMat);

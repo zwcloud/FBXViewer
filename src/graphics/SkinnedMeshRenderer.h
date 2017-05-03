@@ -16,7 +16,6 @@ public:
     Skeleton* m_pSkeleton;
     Animation* m_pAnimation;
 
-    D3DXMATRIX mMatWorld;//root bone matrix in world space
     std::vector<D3DXMATRIX> mBoneCurrentMat;
     unsigned int m_nBone;
 
@@ -35,7 +34,6 @@ private:
     void SetBoneMatPtr();
 
     void UpdateAnimation( D3DXMATRIX matWorld, unsigned int time );
-    void SetPose( D3DXMATRIX matWorld, unsigned int time );
 
     #pragma region Debug
     struct SkeletonVertex

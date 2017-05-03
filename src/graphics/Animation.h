@@ -6,7 +6,7 @@ class Animation
 {
 private:
     Animation(Animation&);
-    void operator = (Animation&);
+    void operator = (Animation&) = delete;
 
     struct Frame
     {

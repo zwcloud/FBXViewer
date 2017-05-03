@@ -13,8 +13,6 @@ SkinnedMeshRenderer::SkinnedMeshRenderer( void ) :
     m_pAnimation(NULL),
     m_nBone(0)
 {
-    D3DXMatrixIdentity(&mMatWorld);
-
     ZeroMemory(&boneMeshMaterial, sizeof(D3DMATERIAL9));
     boneMeshMaterial.Ambient = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
     boneMeshMaterial.Diffuse = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
@@ -35,7 +33,6 @@ void SkinnedMeshRenderer::Load(Skeleton* skeleton, Animation* animation, Materia
     this->m_pSkeleton = skeleton;
     this->m_pAnimation = animation;
     SetBoneMatPtr();
-    //Update(mMatWorld, 0U);
     BuildBoneMesh();
 }
 
@@ -55,16 +52,10 @@ void SkinnedMeshRenderer::Update( D3DXMATRIX matWorld, unsigned int time )
 
 void SkinnedMeshRenderer::UpdateAnimation( D3DXMATRIX matWorld, unsigned int time )
 {
-    SetPose(matWorld, time);
-}
-
-void SkinnedMeshRenderer::SetPose( D3DXMATRIX matWorld, unsigned int time )
-{
-    mMatWorld = matWorld;
     unsigned int lDuration = m_pAnimation->GetDuration();
     unsigned int currentFrame = (unsigned int)time%lDuration;
     //DebugPrintf("Frame count: %d | Duration: %d | Current animation frame: %d\n", time, lDuration, currentFrame);
-    for (unsigned int i=0; i<m_nBone; i++)
+    for (unsigned int i = 0; i<m_nBone; i++)
     {
         Bone* pBone = m_pSkeleton->GetBone(i);
         D3DXMATRIX mat = m_pAnimation->GetFrame(i, currentFrame);
@@ -78,69 +69,70 @@ void SkinnedMeshRenderer::Render(IDirect3DDevice9* pDevice,
 {
     if (RenderSettings::getInstance().ShowMesh())
     {
-        D3DXMATRIX matViewProj;
-        D3DXMatrixMultiply(&matViewProj, &matView, &matProj);
-        unsigned int nBones = m_pSkeleton->NumBones();
         //set current bone matrix
+        unsigned int nBones = m_pSkeleton->NumBones();
         for (unsigned int i=0; i<nBones; i++)
         {
             Bone* pBone = m_pSkeleton->GetBone(i);
-            D3DXMATRIX matInverse;
+            D3DXMATRIX matInverse;//inversed bind pose matrix
             D3DXMatrixInverse(&matInverse, NULL, &pBone->matBone);
             D3DXMatrixMultiply(&mBoneCurrentMat[i], &matInverse, &pBone->matOffset);
         }
-        //设置Constants，绘制Mesh
+
+        //render skinned-mesh
+        D3DXMATRIX matViewProj;
+        D3DXMatrixMultiply(&matViewProj, &matView, &matProj);
         MaterialUtil::SetConstants(pDevice, this->material, matWorld, matViewProj, eyePoint, &mBoneCurrentMat[0], m_nBone);
-        {
-            HRESULT hr = S_FALSE;
 
-            IDirect3DTexture9*& texture = material->Texture();
-            IDirect3DVertexShader9*& pVS = material->VS();
-            IDirect3DPixelShader9*& pPS = material->PS();
-            ID3DXConstantTable*& pCTVS = material->VSConstantTable();
-            ID3DXConstantTable*& pCTPS = material->PSConstantTable();
+        HRESULT hr = S_FALSE;
 
-            int nFaces = mesh->nFaces;
-            int nVertices = mesh->nVertices;
-            IDirect3DIndexBuffer9*& pIB = mesh->pIB;
-            IDirect3DVertexBuffer9*& pVB = mesh->pVB;
-            IDirect3DVertexDeclaration9*& pVD = mesh->pVD;
+        IDirect3DTexture9*& texture = material->Texture();
+        IDirect3DVertexShader9*& pVS = material->VS();
+        IDirect3DPixelShader9*& pPS = material->PS();
+        ID3DXConstantTable*& pCTVS = material->VSConstantTable();
+        ID3DXConstantTable*& pCTPS = material->PSConstantTable();
 
-            /* 默认情况下Mesh模型是在右手系下、Z向上、Y向内、X向右的（和3DSMAX中相同）, 且以逆序作为正面 */
-            pDevice->SetRenderState(D3DRS_CULLMODE, D3DCULL_CW);
+        int nFaces = mesh->nFaces;
+        int nVertices = mesh->nVertices;
+        IDirect3DIndexBuffer9*& pIB = mesh->pIB;
+        IDirect3DVertexBuffer9*& pVB = mesh->pVB;
+        IDirect3DVertexDeclaration9*& pVD = mesh->pVD;
 
-            #define USE_ALPHATEST
-            #ifdef USE_ALPHATEST
-            pDevice->SetRenderState(D3DRS_ALPHATESTENABLE, TRUE);
-            pDevice->SetRenderState(D3DRS_ALPHAREF, (DWORD)200);
-            pDevice->SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_GREATEREQUAL);
-            #else
-            pDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
-            pDevice->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
-            pDevice->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
-            #endif
+        /* 默认情况下Mesh模型是在右手系下、Z向上、Y向内、X向右的（和3DSMAX中相同）, 且以逆序作为正面 */
+        pDevice->SetRenderState(D3DRS_CULLMODE, D3DCULL_CW);
 
-            V(pDevice->SetVertexShader(pVS));
-            V(pDevice->SetPixelShader(pPS));
+        #define USE_ALPHATEST
+        #ifdef USE_ALPHATEST
+        pDevice->SetRenderState(D3DRS_ALPHATESTENABLE, TRUE);
+        pDevice->SetRenderState(D3DRS_ALPHAREF, (DWORD)200);
+        pDevice->SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_GREATEREQUAL);
+        #else
+        pDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
+        pDevice->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
+        pDevice->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
+        #endif
 
-            V(pDevice->SetVertexDeclaration(pVD));
-            V(pDevice->SetIndices(pIB));
-            V(pDevice->SetStreamSource(0, pVB, 0, sizeof(Vertex)));
-            V(pDevice->SetTexture(0, texture));
-            V(pDevice->DrawIndexedPrimitive(D3DPT_TRIANGLELIST, 0, 0, nVertices, 0, nFaces));
+        V(pDevice->SetVertexShader(pVS));
+        V(pDevice->SetPixelShader(pPS));
 
-            V(pDevice->SetTexture(0, 0));
+        V(pDevice->SetVertexDeclaration(pVD));
+        V(pDevice->SetIndices(pIB));
+        V(pDevice->SetStreamSource(0, pVB, 0, sizeof(Vertex)));
+        V(pDevice->SetTexture(0, texture));
+        V(pDevice->DrawIndexedPrimitive(D3DPT_TRIANGLELIST, 0, 0, nVertices, 0, nFaces));
 
-            #ifdef USE_ALPHATEST
-            pDevice->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE);
-            #else
-            pDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
-            #endif
-        }
+        V(pDevice->SetTexture(0, 0));
+
+        #ifdef USE_ALPHATEST
+        pDevice->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE);
+        #else
+        pDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
+        #endif
     }
 
     if (RenderSettings::getInstance().ShowSkeleton())
     {
+        //render skeleton
         RenderBoneMesh(pDevice, matWorld, matView, matProj);
     }
 }
@@ -223,7 +215,7 @@ void SkinnedMeshRenderer::RenderBoneMesh(IDirect3DDevice9* pDevice,
     HRESULT hr;
     unsigned int nBonePositions = mBonePositions.size();
 
-    V(pDevice->SetTransform(D3DTS_WORLD, &mMatWorld));
+    V(pDevice->SetTransform(D3DTS_WORLD, &matWorld));
     V(pDevice->SetTransform(D3DTS_VIEW, &matView));
     V(pDevice->SetTransform(D3DTS_PROJECTION, &matProj));
     V(pDevice->SetRenderState(D3DRS_LIGHTING, FALSE));
