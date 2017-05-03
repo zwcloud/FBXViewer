@@ -9,6 +9,10 @@
       <Configuration>Release</Configuration>
       <Platform>Win32</Platform>
     </ProjectConfiguration>
+    <ProjectConfiguration Include="Test|Win32">
+      <Configuration>Test</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{BE53ECAD-9B4F-4C58-B6C5-C298AAADE8E4}</ProjectGuid>
@@ -19,6 +23,12 @@
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v141</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Test|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <CharacterSet>MultiByte</CharacterSet>
     <PlatformToolset>v141</PlatformToolset>
@@ -36,19 +46,40 @@
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Test|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>$(SolutionDir)\include\dxsdk;$(SolutionDir)\include\fbxsdk;$(ProjectDir);$(IncludePath)</IncludePath>
-    <LibraryPath>$(SolutionDir)\lib\dxsdk\x86;$(SolutionDir)\lib\fbxsdk\x86\debug;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(SolutionDir)include\dxsdk;$(SolutionDir)include\fbxsdk;$(SolutionDir)src;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)lib\dxsdk\x86;$(SolutionDir)lib\fbxsdk\x86\debug;$(LibraryPath)</LibraryPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Test|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+    <IncludePath>$(SolutionDir)include\dxsdk;$(SolutionDir)include\fbxsdk;$(SolutionDir)src;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)lib\dxsdk\x86;$(SolutionDir)lib\fbxsdk\x86\debug;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_CRT_SECURE_NO_WARNINGS;FBXSDK_SHARED;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>d3d9.lib;d3dx9d.lib;libfbxsdk.lib;wininet.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Test|Win32'">
     <ClCompile>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
@@ -78,56 +109,57 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <None Include="inputFile.txt" />
-    <None Include="resources\scorpid.FBX" />
-    <None Include="resources\shader\skinned.psh" />
-    <None Include="resources\shader\skinned.vsh" />
-    <None Include="resources\shader\static.psh" />
-    <None Include="resources\shader\static.vsh" />
-    <None Include="resources\shader\staticColorTextured.psh" />
-    <None Include="resources\shader\staticColorTextured.vsh" />
-    <None Include="resources\shader\staticTextured.psh" />
-    <None Include="resources\shader\staticTextured.vsh" />
+    <None Include="..\src\inputFile.txt" />
+    <None Include="..\src\resources\scorpid.FBX" />
+    <None Include="..\src\resources\shader\skinned.psh" />
+    <None Include="..\src\resources\shader\skinned.vsh" />
+    <None Include="..\src\resources\shader\static.psh" />
+    <None Include="..\src\resources\shader\static.vsh" />
+    <None Include="..\src\resources\shader\staticColorTextured.psh" />
+    <None Include="..\src\resources\shader\staticColorTextured.vsh" />
+    <None Include="..\src\resources\shader\staticTextured.psh" />
+    <None Include="..\src\resources\shader\staticTextured.vsh" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="graphics\Animation.h" />
-    <ClInclude Include="graphics\Axis.h" />
-    <ClInclude Include="graphics\Camera.h" />
-    <ClInclude Include="graphics\Mesh.h" />
-    <ClInclude Include="graphics\Skeleton.h" />
-    <ClInclude Include="graphics\SkinnedMeshRenderer.h" />
-    <ClInclude Include="graphics\SMesh.h" />
-    <ClInclude Include="graphics\Vertex.h" />
-    <ClInclude Include="fbx\FBXCommon.h" />
-    <ClInclude Include="fbx\FbxExtractor.h" />
-    <ClInclude Include="graphics\GraphicsDevice.h" />
-    <ClInclude Include="graphics\Material.h" />
-    <ClInclude Include="common\Profile.h" />
-    <ClInclude Include="graphics\RenderSettings.h" />
-    <ClInclude Include="stdafx.h" />
+    <ClInclude Include="..\src\graphics\Animation.h" />
+    <ClInclude Include="..\src\graphics\Axis.h" />
+    <ClInclude Include="..\src\graphics\Camera.h" />
+    <ClInclude Include="..\src\graphics\Mesh.h" />
+    <ClInclude Include="..\src\graphics\Skeleton.h" />
+    <ClInclude Include="..\src\graphics\SkinnedMeshRenderer.h" />
+    <ClInclude Include="..\src\graphics\SMesh.h" />
+    <ClInclude Include="..\src\graphics\Vertex.h" />
+    <ClInclude Include="..\src\fbx\FBXCommon.h" />
+    <ClInclude Include="..\src\fbx\FbxExtractor.h" />
+    <ClInclude Include="..\src\graphics\GraphicsDevice.h" />
+    <ClInclude Include="..\src\graphics\Material.h" />
+    <ClInclude Include="..\src\common\Profile.h" />
+    <ClInclude Include="..\src\graphics\RenderSettings.h" />
+    <ClInclude Include="..\src\stdafx.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="graphics\Animation.cpp" />
-    <ClCompile Include="graphics\Axis.cpp" />
-    <ClCompile Include="graphics\Camera.cpp" />
-    <ClCompile Include="graphics\Mesh.cpp" />
-    <ClCompile Include="graphics\Skeleton.cpp" />
-    <ClCompile Include="graphics\SkinnedMeshRenderer.cpp" />
-    <ClCompile Include="graphics\SMesh.cpp" />
-    <ClCompile Include="FBXViewer.cpp" />
-    <ClCompile Include="fbx\FBXCommon.cpp" />
-    <ClCompile Include="fbx\FbxExtractor.cpp" />
-    <ClCompile Include="graphics\GraphicsDevice.cpp" />
-    <ClCompile Include="graphics\Material.cpp" />
-    <ClCompile Include="common\Profile.cpp" />
-    <ClCompile Include="graphics\RenderSettings.cpp" />
-    <ClCompile Include="stdafx.cpp">
+    <ClCompile Include="..\src\graphics\Animation.cpp" />
+    <ClCompile Include="..\src\graphics\Axis.cpp" />
+    <ClCompile Include="..\src\graphics\Camera.cpp" />
+    <ClCompile Include="..\src\graphics\Mesh.cpp" />
+    <ClCompile Include="..\src\graphics\Skeleton.cpp" />
+    <ClCompile Include="..\src\graphics\SkinnedMeshRenderer.cpp" />
+    <ClCompile Include="..\src\graphics\SMesh.cpp" />
+    <ClCompile Include="..\src\FBXViewer.cpp" />
+    <ClCompile Include="..\src\fbx\FBXCommon.cpp" />
+    <ClCompile Include="..\src\fbx\FbxExtractor.cpp" />
+    <ClCompile Include="..\src\graphics\GraphicsDevice.cpp" />
+    <ClCompile Include="..\src\graphics\Material.cpp" />
+    <ClCompile Include="..\src\common\Profile.cpp" />
+    <ClCompile Include="..\src\graphics\RenderSettings.cpp" />
+    <ClCompile Include="..\src\stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Test|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <Image Include="resources\image\box.png" />
+    <Image Include="..\src\resources\image\box.png" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

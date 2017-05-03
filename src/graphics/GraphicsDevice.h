@@ -5,11 +5,9 @@ class GraphicsDevice
 {
 private:
     GraphicsDevice(void){}
-    void operator = (GraphicsDevice&);
+    void operator = (GraphicsDevice&) = delete;
 
     static GraphicsDevice* instance;
-
-
     RECT WindowRect;
     RECT ClientRect;
     HWND m_hWnd;
