@@ -37,7 +37,8 @@ Final layout of directory include and lib:
 2. Build solution.
 
 ## Run
-In VS2017, Press F5 to debug run FBXViewer project.
+1. Copy FBX dll (libfbxsdk.dll, libfbxsdk.pdb) to `bin\Application`. The dll can be found in `XXXX\Autodesk\FBX\FBX SDK\2014.2.1\lib\vs2010\x86\debug`.
+2. Open `FBXViewer.sln` in VS2017, Press F5 to debug run FBXViewer project.
 
 # License
 MIT, Zou Wei (zwcloud, zwcloud@hotmail.com)
