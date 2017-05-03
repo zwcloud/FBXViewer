@@ -14,6 +14,8 @@ public:
     void operator=(RenderSettings const&) = delete;
 
 private:
+    bool showMesh = false;
+    bool showSkeleton = true;
     //lighting
     D3DXCOLOR ambient;
     D3DXCOLOR diffuse;
@@ -29,4 +31,6 @@ public:
     float& SpecularPower() { return specularPower; }
     D3DXVECTOR3& LightPos() { return lightPos; } //point light position
     D3DXVECTOR3& Attenuation012() { return attenuation012; } //light attenuation
+    bool& ShowMesh() { return showMesh; }
+    bool& ShowSkeleton() { return showSkeleton; }
 };

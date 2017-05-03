@@ -13,10 +13,11 @@
 #define DumpMeshTransformation
 #define DumpBones 1
 #define DumpAnimation 0
-//#define DumpRootNodeTransformation
-//#define DumpNodeGeometryTransformation
+#define DumpRootNodeTransformations 0
+#define DumpNodeGeometryTransformation 1
 #pragma endregion
 
+#define USE_EvaluateGlobalTransform true
 // Identity D3D Matrix
 static D3DXMATRIX IdentityMatrix;
 
@@ -44,32 +45,19 @@ FbxExtractor::FbxExtractor() : lSdkManager(NULL), fbxScene(NULL), m_pSkeleton(NU
 
 void FbxExtractor::DoExtract(const char * src)
 {
-    // load FbxScene
     bool bResult = LoadScene(lSdkManager, fbxScene, src);
     DebugAssert(true == bResult && NULL != fbxScene, "LoadScene failed\n");
 
     ExtractHierarchy();
 
-    unsigned int lMeshCount = Meshes.size();
-    for (unsigned int i = 0; i<lMeshCount; i++)
+    for each (auto pair in this->FbxMeshMap)
     {
-        Mesh* pMesh = Meshes.at(i);
-        FbxMesh* pFbxMesh = FbxMeshes.at(i);
-        // 提取骨骼索引和权值、提取骨骼相关矩阵
-        bResult = ExtractWeight(pMesh, pFbxMesh);
-        if (!bResult)   //静态Mesh不包含骨骼信息
-        {
-            pMesh->m_bStatic = true;
-        }
-        else
-        {
-            pMesh->m_bStatic = false;
-        }
-        //在Mesh中复制顶点以使得UV和顶点位置一一对应
-        SplitVertexForUV(pMesh);
+        Mesh* mesh = pair.first;
+        FbxMesh* fbxMesh = pair.second;
+        mesh->m_bStatic = !ExtractWeight(mesh, fbxMesh);
+        SplitVertexForUV(mesh);//在Mesh中复制顶点以使得UV和顶点位置一一对应
         //pMesh->Dump(1);
-        /*
-        max script:
+        /* testing max script:
         getTVFace $st_001 1
         [13,27,28]
         getTVert $st_001 13
@@ -92,23 +80,6 @@ void FbxExtractor::DoExtract(const char * src)
     }
 
     ExtractAnimation();
-
-#if DumpBones
-    //Dump Bones
-    DebugPrintf("Bones:\n");
-    unsigned int nBones = m_pSkeleton->NumBones();
-    for (unsigned int i = 0; i<nBones; i++)
-    {
-        DebugPrintf("%d\n", i);
-        DumpBone(i, true, true);
-    }
-#endif
-
-#if Animation
-    //Dump Animation
-    DebugPrintf("提取的动画信息:\n");
-    m_pAnimation->Dump(true, true);
-#endif
 }
 
 FbxExtractor::~FbxExtractor(void)
@@ -245,7 +216,7 @@ void FbxExtractor::ExtractHierarchy()
     FbxNode* rootNode = fbxScene->GetRootNode();
     DebugAssert(NULL!=rootNode, "invalid FbxScene，rootNode为NULL\n");
 
-#ifdef DumpRootNodeTransformation
+#if DumpRootNodeTransformations
     {
         DebugPrintf("Root Node <%s> Geometry Transformation:\n", rootNode->GetName());
         FbxAMatrix mat = GetGeometryTransformation(rootNode);
@@ -283,21 +254,17 @@ void FbxExtractor::ExtractHierarchy()
     }
 #endif
 
-    //注意rootNode不会包含Mesh和骨骼信息
-
-    // 遍历节点树
     const unsigned int childCount = rootNode->GetChildCount();
     for(unsigned int i = 0; i < childCount; i++)
     {
         FbxNode* pChildNode = rootNode->GetChild(i);
-        //所有节点都当做骨骼
         ExtractNode(pChildNode, -1);
     }
 }
 
 void FbxExtractor::ExtractNode( FbxNode* pNode, int parentID )
 {
-#ifdef DumpNodeGeometryTransformation
+#if DumpNodeGeometryTransformation
     DebugPrintf("Node <%s> Geometry Transformation: ", pNode->GetName());
     FbxAMatrix matGeo = GetGeometryTransformation(pNode);
     FbxVector4 T = matGeo.GetT();
@@ -307,28 +274,20 @@ void FbxExtractor::ExtractNode( FbxNode* pNode, int parentID )
 #endif
 
     FbxNodeAttribute* pNodeAttribute = pNode->GetNodeAttribute();
-    if (pNodeAttribute
-        && pNodeAttribute->GetAttributeType() == FbxNodeAttribute::eMesh)
-    {//节点为FbxMesh
+    if (pNodeAttribute && pNodeAttribute->GetAttributeType() == FbxNodeAttribute::eMesh)
+    {
         FbxMesh* pFbxMesh = (FbxMesh*)pNodeAttribute;
-        FbxMeshes.push_back(pFbxMesh);
         Mesh* pMesh = ExtractStaticMesh(pFbxMesh);
         Meshes.push_back(pMesh);
+        this->FbxMeshMap[pMesh] = pFbxMesh;
     }
     else
     {
-        //所有非FbxMesh节点都当做骨骼 TODO:是否限定父节点为rootNode并且没有子节点的节点不作为骨骼？（因为是孤立节点）
-        int boneID = ExtractBone(pNode, parentID);
-        if (boneID == -2)   //已经提取过该骨骼（这是不大可能发生的情况，除非两个骨骼同名）
-        {
-            return;
-        }
-
-        // extract info of child bones
+        Bone* bone = ExtractBone(pNode, parentID);//a non-FbxMesh node is a bone.
         const unsigned int childCount = pNode->GetChildCount();
         for(unsigned int i = 0; i < childCount; i++)
         {
-            ExtractNode(pNode->GetChild(i), boneID);
+            ExtractNode(pNode->GetChild(i), bone->mBoneId);
         }
     }
 }
@@ -429,8 +388,20 @@ Mesh* FbxExtractor::ExtractStaticMesh(FbxMesh* lMesh)
 #endif
 
     pMesh->mName = pNode->GetName();
+    FbxAMatrix matLocal = pNode->EvaluateLocalTransform();
 
 #ifdef DumpMeshTransformation
+    {
+        DebugPrintf("FbxMesh <%s> Pivot Transformation Info:\n", pMesh->mName.c_str());
+        FbxAMatrix mat;
+        lMesh->GetPivot(mat);
+        FbxVector4 T = mat.GetT();
+        DebugPrintf("    T(%.3f, %.3f, %.3f)\n", T[0], T[1], T[2]);
+        FbxVector4 R = mat.GetR();
+        DebugPrintf("    R(%.3f, %.3f, %.3f)\n", R[0], R[1], R[2]);
+        FbxVector4 S = mat.GetS();
+        DebugPrintf("    S(%.3f, %.3f, %.3f)\n", S[0], S[1], S[2]);
+    }
     {
         DebugPrintf("Node of FbxMesh <%s> Geometry Transformation Info:\n",pMesh->mName.c_str());
         FbxAMatrix mat = GetGeometryTransformation(pNode);
@@ -489,9 +460,11 @@ Mesh* FbxExtractor::ExtractStaticMesh(FbxMesh* lMesh)
     FbxVector4* lControlPoints = lMesh->GetControlPoints();
 	for (i = 0; i<pMesh->nVertices; i++)
     {
-        Positions.at(i).x = (float)lControlPoints[i][0];
-		Positions.at(i).y = (float)lControlPoints[i][1];
-		Positions.at(i).z = (float)lControlPoints[i][2];
+        FbxVector4 point = lControlPoints[i];
+        point = matLocal.MultT(point);
+        Positions.at(i).x = (float)point[0];
+		Positions.at(i).y = (float)point[1];
+		Positions.at(i).z = -(float)point[2];
     }
 
     //获取索引值
@@ -731,69 +704,111 @@ Mesh* FbxExtractor::ExtractStaticMesh(FbxMesh* lMesh)
 }
 
 //返回提取出的骨骼的ID
-int FbxExtractor::ExtractBone( FbxNode* pNode, int parentID )
+Bone* FbxExtractor::ExtractBone(FbxNode* pNode, int parentID)
 {
-    // 创建骨骼（ID: parentID）的子骨骼
+    const char* nodeName = pNode->GetName();
+    //check if the bone exists
+    for (unsigned int i = 0; i < m_pSkeleton->NumBones(); ++i)
+    {
+        DebugAssert(m_pSkeleton->GetBone(i)->mName != nodeName, "Bone<%s> already exists.", nodeName)
+    }
+
     Bone* pBone = new Bone();
     pBone->mBoneId = m_pSkeleton->NumBones();  //!!Bone的ID即其在m_pSkeleton的索引值
     pBone->mParentId = parentID;
-    pBone->mName = pNode->GetName();
-    // 检查该骨骼是否已存在（由名字来判断），若是则跳过
-    for (unsigned int i = 0; i < m_pSkeleton->NumBones(); ++i)
-    {
-        if (m_pSkeleton->GetBone(i)->mName == pBone->mName)
-            return -2;
-    }
+    pBone->mName = nodeName;
+    FbxAMatrix matBone = pNode->EvaluateGlobalTransform();
+    matBone.SetS(FbxVector4(1, 1, 1, 1));//force to 1,1,1. FIXME
+    pBone->matBone = FbxAMatrix_to_D3DXMATRIX(matBone);
 
-    pBone->matBone = FbxAMatrix_to_D3DXMATRIX(pNode->EvaluateGlobalTransform());
-
-    // save bone to skeleton
     m_pSkeleton->mBones.push_back(pBone);
-    // 存储FbxNode，之后在ComputeSkeletonMatrix中根据这个获取骨骼矩阵，在ExtractCurve中根据这个获取动画信息
-    m_pSkeleton->mFbxNodes.push_back(pNode);
-    // add its ID to the child ID list of parent bone
-    if (parentID != -1) //本骨骼不是根骨骼
+    this->FbxNodeMap[pBone] = pNode;
+    if (!pBone->IsRoot())
     {
+        // add its ID to the child ID list of parent bone
         m_pSkeleton->GetBone(parentID)->mChildIDs.push_back(pBone->mBoneId);
     }
-    else    //本骨骼是根骨骼
-    {
-        m_pSkeleton->mRootBoneIds.push_back(pBone->mBoneId);
-    }
-    return pBone->mBoneId;
+
+    return pBone;
 }
 
 namespace
 {
-    struct TR
+    struct KeyFrame
     {
-        unsigned short Time;
+        int Time;
         FbxVector4 T;
-        FbxVector4 R;   //R不是Q!
+        FbxVector4 R;   //R is in euler angle
     };
 }
 
-void FbxExtractor::ExtractCurve( unsigned int boneIndex, FbxAnimLayer* pAnimLayer )
+void FbxExtractor::ExtractCurve(Bone* bone, FbxAnimLayer* pAnimLayer)
 {
     bool bResult = false;
-    std::vector<TR> frameValues;    //存储骨骼(boneIndex)的每一帧的动画信息
-    FbxNode* pNode = m_pSkeleton->mFbxNodes.at(boneIndex);
+    std::vector<KeyFrame> keyFrames;
+    unsigned int boneIndex = bone->mBoneId;
+    FbxNode* pNode = this->FbxNodeMap[bone];
     FbxAnimCurve* pCurve = NULL;
 
-    FbxAnimCurve* pCurveTX = pNode->LclTranslation.GetCurve(pAnimLayer, FBXSDK_CURVENODE_COMPONENT_X);
-    if (!pCurveTX)
+#if USE_CURVE
+    //Collect all animation curves
+    std::vector<FbxAnimCurve*> curves =
     {
-        DebugPrintf("骨骼%s(%d)没有包含动画信息\n", pNode->GetName(), boneIndex);
-        return;
+        pNode->LclTranslation.GetCurve(pAnimLayer, FBXSDK_CURVENODE_COMPONENT_X),
+        pNode->LclTranslation.GetCurve(pAnimLayer, FBXSDK_CURVENODE_COMPONENT_Y),
+        pNode->LclTranslation.GetCurve(pAnimLayer, FBXSDK_CURVENODE_COMPONENT_Z),
+        pNode->LclRotation.GetCurve(pAnimLayer, FBXSDK_CURVENODE_COMPONENT_X),
+        pNode->LclRotation.GetCurve(pAnimLayer, FBXSDK_CURVENODE_COMPONENT_Y),
+        pNode->LclRotation.GetCurve(pAnimLayer, FBXSDK_CURVENODE_COMPONENT_Z),
+    };
+    //Get max frame time
+    int maxFrameTime = 0;
+    for each (FbxAnimCurve* curve in curves)
+    {
+        if (nullptr == curve)
+        {
+            continue;
+        }
+        int keyCount = curve->KeyGetCount();
+        FbxAnimCurveKey lastKey = curve->KeyGet(keyCount - 1);
+        FbxTime keyTime = lastKey.GetTime();
+        char lTimeString[256];
+        keyTime.GetTimeString(lTimeString, FbxUShort(256));
+        int time = atoi(lTimeString);
+        maxFrameTime = std::max<int>(maxFrameTime, time);
+    }
+    keyFrames.resize(maxFrameTime);
+
+    //Sample each frame from time moment 0 to maxFrameTime.
+    FbxAnimCurve* curveTX = curves[0];
+    FbxAnimCurve* curveTY = curves[1];
+    FbxAnimCurve* curveTZ = curves[2];
+    FbxAnimCurve* curveRX = curves[3];
+    FbxAnimCurve* curveRY = curves[4];
+    FbxAnimCurve* curveRZ = curves[5];
+    for (int time = 0; time < maxFrameTime; time++)
+    {
+        float tx = 0; if (curveTX != nullptr) curveTX->Evaluate(time);
+        float ty = 0; if (curveTY != nullptr) curveTY->Evaluate(time);
+        float tz = 0; if (curveTZ != nullptr) curveTZ->Evaluate(time);
+        float rx = 0; if (curveRX != nullptr) curveRX->Evaluate(time);
+        float ry = 0; if (curveRY != nullptr) curveRY->Evaluate(time);
+        float rz = 0; if (curveRZ != nullptr) curveRZ->Evaluate(time);
+        FbxVector4 translation = FbxVector4(tx, ty, tz);
+        FbxVector4 rotation = FbxVector4(ry, ry, rz);
+        FbxAMatrix mat = FbxAMatrix(translation, rotation, FbxVector4(1, 1, 1));
+        D3DXMATRIX d3dMat = FbxAMatrix_to_D3DXMATRIX(mat);//local transformation of this bone at this frame
+        m_pAnimation->AddFrame(bone->mBoneId, bone->mName.c_str(), time, d3dMat);
     }
 
+#elif USE_EvaluateGlobalTransform
     //获取动画帧数和每帧时间间隔
-    unsigned int l_nFrameCount = 0;
+    unsigned int frameCount = 0;
     FbxTimeSpan interval;   //每帧时间间隔
     bResult = pNode->GetAnimationInterval(interval);
     if (!bResult)
     {
-        DebugPrintf("Bone \"%s\"不含动画信息\n", pNode->GetName());
+        DebugPrintf("Node<%s> isn't animated.\n", pNode->GetName());
         return;
     }
     FbxTime start = interval.GetStart();
@@ -803,20 +818,23 @@ void FbxExtractor::ExtractCurve( unsigned int boneIndex, FbxAnimLayer* pAnimLaye
 
     FbxLongLong longstart = start.GetFrameCount();
     FbxLongLong longend = end.GetFrameCount();
-    l_nFrameCount = int(longend - longstart) + 1;
-    if (l_nFrameCount > 20) {
-        l_nFrameCount = 20;
+    frameCount = int(longend - longstart) + 1;
+    if (frameCount > 50) {
+        frameCount = 50;
     }
-	for (unsigned int i = 0; i < l_nFrameCount; i++)   //不同的time
+	for (unsigned int i = 0; i < frameCount; i++)
     {
         FbxTime t; t.SetFrame(i);
-        FbxAMatrix mat = pNode->EvaluateGlobalTransform(t); //这里不可靠！原因未知
+        FbxAMatrix matGlobal = pNode->EvaluateGlobalTransform(t);
         unsigned short currentTime = atoi(t.GetTimeString(lTimeString, FbxUShort(256)));
-        D3DXMATRIX d3dMat = FbxAMatrix_to_D3DXMATRIX(mat);
+        D3DXMATRIX d3dMat = FbxAMatrix_to_D3DXMATRIX(matGlobal);
         m_pAnimation->AddFrame(boneIndex, pNode->GetName(), currentTime, d3dMat);
     }
+#endif
+
 }
 
+//Only extract first FbxAnimLayer of first FbxAnimStack of the FBXScene //TODO
 void FbxExtractor::ExtractAnimation()
 {
     FbxAnimLayer* pTheOnlyAnimLayer = NULL;
@@ -839,25 +857,22 @@ void FbxExtractor::ExtractAnimation()
     }
     if (pTheOnlyAnimLayer == NULL)
     {
-        DebugPrintf("没有包含动画信息\n");
+        DebugPrintf("    No Animation Layer.\n");
         return;
     }
 Only:
     FbxAnimLayer* pAnimLayer = pTheOnlyAnimLayer;
-    //Only extract first FbxAnimLayer of first FbxAnimStack of the FBXScene//TODO
     FbxAnimCurve* lAnimCurve = NULL;
     unsigned int nBones = m_pSkeleton->NumBones();
-    for (unsigned int i=0; i<nBones; i++)
+    for (unsigned int i = 0; i < nBones; i++)
     {
-        Bone* pBone = m_pSkeleton->GetBone(i);
-        DebugAssert(i==pBone->mBoneId, "i!=mBoneId\n");
-        //DebugPrintf("Bone \"%s\"(%d):\n", pBone->mName.c_str(), i);
-        ExtractCurve(i, pAnimLayer);
+        Bone* bone = m_pSkeleton->GetBone(i);
+        ExtractCurve(bone, pAnimLayer);
     }
 }
 
 
-void FbxExtractor::DumpBone(unsigned int boneID, bool printT, bool printR) const
+void FbxExtractor::DumpBone(unsigned int boneID, bool printT/* = true*/, bool printR/* = true*/, bool printS/* = true*/) const
 {
     const Bone* pBone = m_pSkeleton->GetBone(boneID);
     if (pBone->mParentId == -1)
@@ -883,6 +898,11 @@ void FbxExtractor::DumpBone(unsigned int boneID, bool printT, bool printR) const
     {
         FbxVector4 R = fbxmat.GetR();
         DebugPrintf("    R(%.3f, %.3f, %.3f)\n", R[0], R[1], R[2]);
+    }
+    if (printS)
+    {
+        FbxVector4 S = fbxmat.GetS();
+        DebugPrintf("    S(%.3f, %.3f, %.3f)\n", S[0], S[1], S[2]);
     }
     DebugPrintf("---------------------------\n");
 }

@@ -7,6 +7,7 @@
 #include <d3dx9.h>
 
 class Mesh;
+class Bone;
 class Skeleton;
 class Animation;
 /*
@@ -30,7 +31,8 @@ public:
 private:
     //Mesh 列表
     std::vector<Mesh*> Meshes;
-    std::vector<FbxMesh*> FbxMeshes;
+    std::map<Mesh*, FbxMesh*> FbxMeshMap;
+    std::map<Bone*, FbxNode*> FbxNodeMap;
 
     //唯一的骨骼
     Skeleton* m_pSkeleton;
@@ -46,18 +48,16 @@ private:
     FbxExtractor( const FbxExtractor& );
     FbxExtractor& operator = (const FbxExtractor& );
     //Mesh
-    bool isUVExist(const D3DXVECTOR2& uv);
     bool SplitVertexForUV(Mesh* pMesh);
     Mesh* ExtractStaticMesh(FbxMesh* lMesh);
     bool ExtractWeight(Mesh* pMesh, FbxMesh* pFbxMesh);
     //Bone
     void ExtractHierarchy();
     void ExtractNode(FbxNode* pNode, int parentID);
-    int ExtractBone(FbxNode* pNode, int parentID);
-    void ComputeSkeletonMatrix();
+    Bone* ExtractBone(FbxNode* pNode, int parentID);
     //Animation
     void ExtractAnimation();
-    void ExtractCurve(unsigned int boneIndex, FbxAnimLayer* pAnimLayer);
+    void ExtractCurve(Bone* bone, FbxAnimLayer* pAnimLayer);
 
-    void DumpBone(unsigned int boneID, bool printT, bool printR) const;
+    void DumpBone(unsigned int boneID, bool printT = true, bool printR = true, bool printS = true) const;
 };

@@ -345,22 +345,24 @@ FbxAMatrix GetLocalTransformation(FbxNode* pNode)
     return FbxAMatrix(lT, lQ, lS);
 }
 
+//FbxAMatrix is column major
+//D3DXMATRIX is row major
 D3DXMATRIX FbxAMatrix_to_D3DXMATRIX(const FbxAMatrix& lMatrix)
 {
-	D3DXMATRIX mat(
-		(float)lMatrix.Get(0, 0), (float)lMatrix.Get(0, 1), (float)lMatrix.Get(0, 2), (float)lMatrix.Get(0, 3),
-		(float)lMatrix.Get(1, 0), (float)lMatrix.Get(1, 1), (float)lMatrix.Get(1, 2), (float)lMatrix.Get(1, 3),
-		(float)lMatrix.Get(2, 0), (float)lMatrix.Get(2, 1), (float)lMatrix.Get(2, 2), (float)lMatrix.Get(2, 3),
-		(float)lMatrix.Get(3, 0), (float)lMatrix.Get(3, 1), (float)lMatrix.Get(3, 2), (float)lMatrix.Get(3, 3));
+    D3DXMATRIX mat(
+        (float)lMatrix.Get(0, 0), (float)lMatrix.Get(0, 1), (float)lMatrix.Get(0, 2), (float)lMatrix.Get(0, 3),
+        (float)lMatrix.Get(1, 0), (float)lMatrix.Get(1, 1), (float)lMatrix.Get(1, 2), (float)lMatrix.Get(1, 3),
+        (float)lMatrix.Get(2, 0), (float)lMatrix.Get(2, 1), (float)lMatrix.Get(2, 2), (float)lMatrix.Get(2, 3),
+        (float)lMatrix.Get(3, 0), (float)lMatrix.Get(3, 1), (float)lMatrix.Get(3, 2), (float)lMatrix.Get(3, 3));
     return mat;
 }
 
 FbxAMatrix D3DXMATRIX_to_FbxAMatrix(const D3DXMATRIX& lMatrix)
 {
     FbxAMatrix mat;
-    mat.SetRow(0, FbxVector4(lMatrix._11,lMatrix._12,lMatrix._13,lMatrix._14));
-    mat.SetRow(1, FbxVector4(lMatrix._21,lMatrix._22,lMatrix._23,lMatrix._24));
-    mat.SetRow(2, FbxVector4(lMatrix._31,lMatrix._32,lMatrix._33,lMatrix._34));
-    mat.SetRow(3, FbxVector4(lMatrix._41,lMatrix._42,lMatrix._43,lMatrix._44));
+    mat.SetRow(0, FbxVector4(lMatrix._11, lMatrix._12, lMatrix._13, lMatrix._14));
+    mat.SetRow(1, FbxVector4(lMatrix._21, lMatrix._22, lMatrix._23, lMatrix._24));
+    mat.SetRow(2, FbxVector4(lMatrix._31, lMatrix._32, lMatrix._33, lMatrix._34));
+    mat.SetRow(3, FbxVector4(lMatrix._41, lMatrix._42, lMatrix._43, lMatrix._44));
     return mat;
 }

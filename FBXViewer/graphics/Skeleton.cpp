@@ -1,9 +1,9 @@
 ﻿#include "stdafx.h"
 #include "Skeleton.h"
-#include "FBX/FBXCommon.h"
+#include "fbx/FBXCommon.h"
 #include <algorithm>
 
-Skeleton::Skeleton(void) : mMeshType(RIGHTHANDED_ZUP)
+Skeleton::Skeleton(void)
 {
 }
 
@@ -24,12 +24,6 @@ unsigned int Skeleton::AddBone(const std::string& name, int parentId)
 	pBone->mParentId = parentId;
 	pBone->mBoneId = (unsigned int)mBones.size();
 	mBones.push_back(pBone);
-
-	// If the parent of this bone is NULL so it is a root bone
-	if (parentId < 0)
-    {
-		mRootBoneIds.push_back(pBone->mBoneId);
-    }
 	return pBone->mBoneId;
 }
 
@@ -38,7 +32,6 @@ void Skeleton::Destroy()
 	for (unsigned int i = 0; i < mBones.size(); ++i)
 		delete mBones[i];
     mBones.resize(0);
-    mRootBoneIds.resize(0);
 }
 
 unsigned int Skeleton::NumBones() const
@@ -49,8 +42,9 @@ unsigned int Skeleton::NumBones() const
 Bone* Skeleton::GetBone(unsigned int boneId) const
 {
 	assert(boneId < mBones.size());
-
-	return mBones[boneId];
+    Bone* bone = mBones[boneId];
+    assert(boneId == bone->mBoneId);
+	return bone;
 }
 
 int Skeleton::GetBoneIndex(const std::string& name) const
@@ -63,18 +57,6 @@ int Skeleton::GetBoneIndex(const std::string& name) const
         }
     }
     return -1;
-}
-
-unsigned int Skeleton::NumRootBones() const
-{
-	return (unsigned int)mRootBoneIds.size();
-}
-
-//获取第index个根骨骼的id
-unsigned int Skeleton::GetRootBoneId(unsigned int index) const
-{
-	assert(index < mRootBoneIds.size());
-	return mRootBoneIds[index];
 }
 
 void Skeleton::SetBoneMatrix( unsigned int index, D3DXMATRIX& mat )
@@ -101,14 +83,4 @@ D3DXMATRIX Skeleton::GetParentBoneMatrix( unsigned int index )
     }
     Bone* pParentBone = GetBone(parentIndex);
     return pParentBone->matBone;
-}
-
-void Skeleton::Convert( MeshType targetType /*= LEFTHANDED_YUP*/ )
-{
-    if (mMeshType == RIGHTHANDED_ZUP && targetType == RIGHTHANDED_ZUP)   //这种情况下无需转换
-    {
-        DebugPrintf("无需转换\n");
-        return;
-    }
-
 }

@@ -1,6 +1,6 @@
 ﻿#include "stdafx.h"
 #include "Animation.h"
-#include "FBX/FBXCommon.h"
+#include "fbx/FBXCommon.h"
 
 #define LOG_FRAME_GET 0
 

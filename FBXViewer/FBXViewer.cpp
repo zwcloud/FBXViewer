@@ -6,6 +6,7 @@
 #include "graphics/Camera.h"
 #include "graphics/Axis.h"
 #include "graphics/Material.h"
+#include "graphics\RenderSettings.h"
 
 #define MAX_LOADSTRING 100
 
@@ -236,8 +237,20 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         case VK_OEM_3://~
             bStepMode = !bStepMode;
             break;
+        case '1':
+        {
+            bool& showMesh = RenderSettings::getInstance().ShowMesh();
+            showMesh = !showMesh;
+        }
+            break;
+        case '2':
+        {
+            bool& showSkeleton = RenderSettings::getInstance().ShowSkeleton();
+            showSkeleton = !showSkeleton;
+        }
+            break;
         case 'P':
-            Pause = Pause ? false : true;
+            Pause = !Pause;
             break;
         //camera
         case 'W':
