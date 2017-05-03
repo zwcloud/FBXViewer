@@ -59,5 +59,5 @@ private:
     void ExtractAnimation();
     void ExtractCurve(Bone* bone, FbxAnimLayer* pAnimLayer);
 
-    void DumpBone(unsigned int boneID, bool printT = true, bool printR = true, bool printS = true) const;
+    void DumpBone(const Bone* bone, bool printT = true, bool printR = true, bool printS = true) const;
 };

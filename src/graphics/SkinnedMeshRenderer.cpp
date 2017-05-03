@@ -20,11 +20,6 @@ SkinnedMeshRenderer::SkinnedMeshRenderer( void ) :
 
 SkinnedMeshRenderer::~SkinnedMeshRenderer( void )
 {
-
-}
-
-void SkinnedMeshRenderer::Destroy()
-{
 }
 
 void SkinnedMeshRenderer::Load(Skeleton* skeleton, Animation* animation, Material* material)
@@ -40,17 +35,19 @@ void SkinnedMeshRenderer::SetBoneMatPtr()
 {
     unsigned int nBones = m_pSkeleton->NumBones();
     DebugAssert(nBones<=MAX_BONE_COUNT, "Number of bones exceeds 50.\n");
-    mBoneCurrentMat.resize(nBones);
+    D3DXMATRIX IdentityMatrix;
+    D3DXMatrixIdentity(&IdentityMatrix);
+    mBoneCurrentMat.resize(nBones, IdentityMatrix);
     m_nBone = nBones;
 }
 
-void SkinnedMeshRenderer::Update( D3DXMATRIX matWorld, unsigned int time )
+void SkinnedMeshRenderer::Update(unsigned int time )
 {
-    UpdateAnimation(matWorld, time);
-    UpdateBoneMesh(matWorld, time);
+    UpdateAnimation(time);
+    UpdateBoneMesh(time);
 }
 
-void SkinnedMeshRenderer::UpdateAnimation( D3DXMATRIX matWorld, unsigned int time )
+void SkinnedMeshRenderer::UpdateAnimation(unsigned int time)
 {
     unsigned int lDuration = m_pAnimation->GetDuration();
     unsigned int currentFrame = (unsigned int)time%lDuration;
@@ -59,7 +56,7 @@ void SkinnedMeshRenderer::UpdateAnimation( D3DXMATRIX matWorld, unsigned int tim
     {
         Bone* pBone = m_pSkeleton->GetBone(i);
         D3DXMATRIX mat = m_pAnimation->GetFrame(i, currentFrame);
-        memcpy(&pBone->matOffset, &mat, sizeof(D3DXMATRIX));   //get offsetMatrix at time 'time'
+        memcpy(&pBone->matOffset, &mat, sizeof(D3DXMATRIX));
     }
 }
 
@@ -76,7 +73,7 @@ void SkinnedMeshRenderer::Render(IDirect3DDevice9* pDevice,
             Bone* pBone = m_pSkeleton->GetBone(i);
             D3DXMATRIX matInverse;//inversed bind pose matrix
             D3DXMatrixInverse(&matInverse, NULL, &pBone->matBone);
-            D3DXMatrixMultiply(&mBoneCurrentMat[i], &matInverse, &pBone->matOffset);
+            D3DXMatrixMultiply(&mBoneCurrentMat[i], &pBone->matOffset, &matInverse);
         }
 
         //render skinned-mesh
@@ -171,7 +168,7 @@ void SkinnedMeshRenderer::BuildBoneMesh()
     }
 }
 
-void SkinnedMeshRenderer::UpdateBoneMesh( const D3DXMATRIX& matWorld, unsigned int time )
+void SkinnedMeshRenderer::UpdateBoneMesh(unsigned int time )
 {
     mBonePositions.resize(0);
     unsigned int nBones = m_pSkeleton->NumBones();

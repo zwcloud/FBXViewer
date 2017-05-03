@@ -39,6 +39,8 @@ namespace MeshUtil
 
     bool Create(Mesh& mesh, IDirect3DDevice9* pDevice);
 
+    void Convert(Mesh& mesh);
+
     void Dump(Mesh& mesh, unsigned int n);
 
     bool Update(Mesh& mesh, IDirect3DDevice9* pDevice, const D3DXMATRIX* matBone, unsigned int nBones);

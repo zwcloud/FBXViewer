@@ -21,19 +21,17 @@ public:
 
     void Load(Skeleton* skeleton, Animation* animation, Material* material);
 
-    void Update(D3DXMATRIX matWorld, unsigned int time);
+    void Update(unsigned int time);
 
     void Render(IDirect3DDevice9* pDevice,
         Mesh* mesh,
         const D3DXMATRIX& matWorld,  const D3DXMATRIX& matView, const D3DXMATRIX& matProj, const D3DXVECTOR3& eyePoint);
 
-    void Destroy();
-
 private:
 
     void SetBoneMatPtr();
 
-    void UpdateAnimation( D3DXMATRIX matWorld, unsigned int time );
+    void UpdateAnimation(unsigned int time);
 
     #pragma region Debug
     struct SkeletonVertex
@@ -52,6 +50,6 @@ private:
     void BuildBoneMesh();
     void RenderBoneMesh(IDirect3DDevice9* pDevice,
         const D3DXMATRIX& matWorld,  const D3DXMATRIX& matView, const D3DXMATRIX& matProj);
-    void UpdateBoneMesh( const D3DXMATRIX& matWorld, unsigned int time );
+    void UpdateBoneMesh(unsigned int time );
     #pragma endregion
 };

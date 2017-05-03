@@ -82,6 +82,24 @@ namespace MeshUtil
         return true;
     }
 
+    void Convert(Mesh & mesh)
+    {
+        int n = mesh.nFaces;
+        for (unsigned int i = 0; i < n * 3; i += 3)
+        {
+            int tmp = mesh.IndexBuf[i];
+            mesh.IndexBuf[i] = mesh.IndexBuf[i + 2];
+            mesh.IndexBuf[i + 2] = tmp;
+        }
+
+        int c = mesh.nVertices;
+        for (unsigned int i = 0; i < c; i++)
+        {
+            D3DXVECTOR3 p = mesh.Positions[i];
+            mesh.Positions[i] = D3DXVECTOR3(p.x, p.y, -p.z);
+        }
+    }
+
     void Dump(Mesh& mesh, unsigned int n)
     {
         const std::string& mName = mesh.mName;

@@ -47,6 +47,18 @@ void FbxExtractor::DoExtract(const char * src)
 {
     bool bResult = LoadScene(lSdkManager, fbxScene, src);
     DebugAssert(true == bResult && NULL != fbxScene, "LoadScene failed\n");
+    FbxAxisSystem fbxAxisSystem = fbxScene->GetGlobalSettings().GetAxisSystem();
+    FbxAxisSystem::ECoordSystem coordSystem = fbxAxisSystem.GetCoorSystem();
+    if (coordSystem == FbxAxisSystem::ECoordSystem::eLeftHanded)
+    {
+        DebugPrintf("Using left-handed coordinate system.");
+    }
+    else
+    {
+        DebugPrintf("Using right-handed coordinate system.");
+    }
+
+    FbxAxisSystem::DirectX.ConvertScene(fbxScene);
 
     ExtractHierarchy();
 
@@ -388,7 +400,7 @@ Mesh* FbxExtractor::ExtractStaticMesh(FbxMesh* lMesh)
 #endif
 
     pMesh->mName = pNode->GetName();
-    FbxAMatrix matLocal = pNode->EvaluateLocalTransform();
+    //FbxAMatrix matLocal = pNode->EvaluateLocalTransform();
 
 #ifdef DumpMeshTransformation
     {
@@ -436,6 +448,9 @@ Mesh* FbxExtractor::ExtractStaticMesh(FbxMesh* lMesh)
     }
 #endif
 
+    //lMesh->SetPivot(matLocal);
+    //lMesh->ApplyPivot();
+
     int i, j, lPolygonCount = lMesh->GetPolygonCount();
     pMesh->nFaces = lPolygonCount;
     int controlPointCount = lMesh->GetControlPointsCount();
@@ -461,10 +476,9 @@ Mesh* FbxExtractor::ExtractStaticMesh(FbxMesh* lMesh)
 	for (i = 0; i<pMesh->nVertices; i++)
     {
         FbxVector4 point = lControlPoints[i];
-        point = matLocal.MultT(point);
         Positions.at(i).x = (float)point[0];
 		Positions.at(i).y = (float)point[1];
-		Positions.at(i).z = -(float)point[2];
+		Positions.at(i).z = (float)point[2];
     }
 
     //获取索引值
@@ -729,6 +743,10 @@ Bone* FbxExtractor::ExtractBone(FbxNode* pNode, int parentID)
         m_pSkeleton->GetBone(parentID)->mChildIDs.push_back(pBone->mBoneId);
     }
 
+#if DumpBones
+    DumpBone(pBone);
+#endif
+
     return pBone;
 }
 
@@ -825,9 +843,17 @@ void FbxExtractor::ExtractCurve(Bone* bone, FbxAnimLayer* pAnimLayer)
 	for (unsigned int i = 0; i < frameCount; i++)
     {
         FbxTime t; t.SetFrame(i);
+
+#if true
         FbxAMatrix matGlobal = pNode->EvaluateGlobalTransform(t);//transform of bone in world space at time t
         unsigned short currentTime = atoi(t.GetTimeString(lTimeString, FbxUShort(256)));
         D3DXMATRIX d3dMat = FbxAMatrix_to_D3DXMATRIX(matGlobal);
+#else
+        FbxAMatrix matLocal = pNode->EvaluateLocalTransform(t);//transform of bone in world space at time t
+        unsigned short currentTime = atoi(t.GetTimeString(lTimeString, FbxUShort(256)));
+        D3DXMATRIX d3dMat = FbxAMatrix_to_D3DXMATRIX(matLocal);
+#endif
+
         m_pAnimation->AddFrame(boneIndex, pNode->GetName(), currentTime, d3dMat);
     }
 #endif
@@ -872,9 +898,8 @@ Only:
 }
 
 
-void FbxExtractor::DumpBone(unsigned int boneID, bool printT/* = true*/, bool printR/* = true*/, bool printS/* = true*/) const
+void FbxExtractor::DumpBone(const Bone* pBone, bool printT/* = true*/, bool printR/* = true*/, bool printS/* = true*/) const
 {
-    const Bone* pBone = m_pSkeleton->GetBone(boneID);
     if (pBone->mParentId == -1)
     {
         DebugPrintf("Root ");

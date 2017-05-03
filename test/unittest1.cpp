@@ -65,5 +65,18 @@ namespace test
             Assert::IsTrue(result, L"FbxAMatrix is not the same as D3DXMATRIX");
 		}
 
+        TEST_METHOD(CheckIfEulerRotationsAreEqual)
+        {
+            FbxVector4 a(90.000, -0.000, -180.000);
+            FbxVector4 b(-180.000, 0.000, -90.000);
+
+            FbxQuaternion qa;
+            qa.ComposeSphericalXYZ(a);
+            FbxQuaternion qb;
+            qb.ComposeSphericalXYZ(b);
+
+            LogFormat("A: %.2f, %.2f, %.2f, %.2f\n", qa.mData[0], qa.mData[1], qa.mData[2], qa.mData[3]);
+            LogFormat("B: %.2f, %.2f, %.2f, %.2f\n", qb.mData[0], qb.mData[1], qb.mData[2], qb.mData[3]);
+        }
 	};
 }

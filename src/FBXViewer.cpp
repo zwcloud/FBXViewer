@@ -176,6 +176,7 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
     char filePath[MAX_PATH];
     GetTestFileName(filePath);// get testing file path
     MeshUtil::LoadMeshFromFile(filePath, targetMesh, targetSkeleton, targetAnimation);
+    //MeshUtil::Convert(*targetMesh);
     MeshUtil::Create(*targetMesh, pGDevice->m_pD3DDevice);
     targetMaterial = MaterialUtil::CreateMaterial(pGDevice->m_pD3DDevice, "<nodiffusemap>");
     skinMeshRenderer.Load(targetSkeleton, targetAnimation, targetMaterial);
@@ -317,7 +318,7 @@ void Update( unsigned int _dt )
     //Update scene objects
     cube.Update(currentCursorPos, identity, fixedView, pGDevice->m_matCubeProj);
     axis.Update();
-    skinMeshRenderer.Update(identity, _dt);
+    skinMeshRenderer.Update(_dt);
 }
 
 
@@ -371,7 +372,6 @@ void Destroy()
 {
     axis.Destroy();
     cube.Destroy();
-    skinMeshRenderer.Destroy();
 
     GraphicsDevice::ReleaseInstance();
 }
